@@ -5,6 +5,8 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 export class CanvasChart extends Component {    
     render() {
         const options = {
+            animationEnabled: true,
+			exportEnabled: true,
             title: {
                 text: "Dynamic Line Chart"
             },

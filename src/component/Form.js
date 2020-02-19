@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, FormGroup, Label, Input, Container, Button } from "reactstrap";
 import { useForm } from "react-hook-form";
 import { CanvasChart } from "./CanvasChart";
+import jsPDF from 'jspdf'
 
 export const Formx = (state, action) => {
     
@@ -28,7 +29,6 @@ export const Formx = (state, action) => {
               ...passData,
               { x: parseInt(data.field1), y: parseInt(data.field2) }
             ]);
-            console.log(passData);
         }
     };
 
@@ -42,6 +42,17 @@ export const Formx = (state, action) => {
         register({ name: "field1" });
         register({ name: "field2" });
     }, [register]);
+
+    // Export PDF 
+    const exportPDF = () => {
+        var canvas = document.getElementsByClassName('canvasjs-chart-canvas')[0];
+        var dataURL = canvas.toDataURL();
+        var doc = new jsPDF("p", "mm", "a4");
+        var width = doc.internal.pageSize.getWidth();
+        // var height = doc.internal.pageSize.getHeight();
+        doc.addImage(dataURL, 'JPEG', 0, 0, width, 100);
+        doc.save("download.pdf");
+    }
 
     return (
         <Container>
@@ -69,6 +80,7 @@ export const Formx = (state, action) => {
                 <Button>Submit</Button>
             </Form>
             <CanvasChart arrayData={passData}/>
+            <Button color="danger" onClick={exportPDF}>Export PDF</Button>
         </Container>
     );
 };
