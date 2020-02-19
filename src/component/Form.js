@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, FormGroup, Label, Input, Container, Button } from "reactstrap";
 import { useForm } from "react-hook-form";
-import { Test } from "./Test";
+import { CanvasChart } from "./CanvasChart";
 
 export const Formx = (state, action) => {
     
@@ -23,12 +23,10 @@ export const Formx = (state, action) => {
 
     // submit event click
     const onSubmit = data => {
-        if (data.date != null && data.number != null) {
-            // let finalDate = parseInt(data.date.split("-")[0]);
-            // setPassData([...passData, { x: new Date(finalDate, 0), y: data.number }]);
+        if (data.field1 != null && data.field2 != null) {
             setPassData(passData => [
               ...passData,
-              { x: data.field1, y: data.field2 }
+              { x: parseInt(data.field1), y: parseInt(data.field2) }
             ]);
             console.log(passData);
         }
@@ -70,7 +68,7 @@ export const Formx = (state, action) => {
                 </FormGroup>
                 <Button>Submit</Button>
             </Form>
-            <Test arrayData={passData}/>
+            <CanvasChart arrayData={passData}/>
         </Container>
     );
 };
