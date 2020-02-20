@@ -2,6 +2,8 @@
   "name": "real-chart",
   "version": "0.1.0",
   "private": true,
+  "author": "Moez ZINEB <moez.zineb@gmail.com>",
+  "description": "Simple project for create real time chart with React",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
