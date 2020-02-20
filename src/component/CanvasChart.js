@@ -12,7 +12,7 @@ export class CanvasChart extends Component {
             },
             data: [
                 {
-                    type: "column",
+                    type: this.props.typeChart,
                     dataPoints: this.props.arrayData
                 }
             ]

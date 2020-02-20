@@ -18,6 +18,8 @@ export const Formx = (state, action) => {
     { x: 10, y: 17 }
   ]);
 
+  const [type, setType] = useState('line');
+
   // useForm declaration
   const { register, handleSubmit, setValue } = useForm();
 
@@ -35,6 +37,11 @@ export const Formx = (state, action) => {
   const handleChange = e => {
     setValue(e.target.name, e.target.value);
   };
+
+  // Handle select change
+  const handleSelectChange = e => {
+      setType(e.target.value)
+  }
 
   // Get form data
   useEffect(() => {
@@ -102,7 +109,17 @@ export const Formx = (state, action) => {
         </FormGroup>
         <Button>Submit</Button>
       </Form>
-      <CanvasChart arrayData={passData} />
+      <FormGroup>
+        <Label for="exampleSelect">Select</Label>
+        <Input type="select" name="select" id="exampleSelect" onChange={handleSelectChange}>
+          <option value="line">Line1</option>
+          <option value="spline">Spline</option>
+          <option value="stepLine">StepLine</option>
+          <option value="area">Area</option>
+          {/* <option value="005x">5</option> */}
+        </Input>
+      </FormGroup>
+      <CanvasChart arrayData={passData} typeChart={type}/>
     </Container>
   );
 };
