@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, FormGroup, Label, Input, Container, Button } from "reactstrap";
+import { Form, FormGroup, Label, Input, Container, Button, Row, Col } from "reactstrap";
 import { useForm } from "react-hook-form";
 import { CanvasChart } from "./CanvasChart";
 import jsPDF from "jspdf";
@@ -52,6 +52,7 @@ export const Formx = (state, action) => {
   // Initialise and add pdf export to the list
   useEffect(() => {
     var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[0];
+    // Add export PDF 
     var exportCSV = document.createElement("div");
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
@@ -82,44 +83,91 @@ export const Formx = (state, action) => {
       doc.save("download.pdf");
     });
     toolBar.lastChild.appendChild(exportCSV);
+    // Add reset chart
+    var resetChart = document.createElement("div");
+    var text = document.createTextNode("Reset");
+    resetChart.setAttribute(
+      "style",
+      "padding: 12px 8px; background-color: white; color: black"
+    );
+    resetChart.appendChild(text);
+
+    resetChart.addEventListener("mouseover", function() {
+      resetChart.setAttribute(
+        "style",
+        "padding: 12px 8px; background-color: #2196F3; color: white"
+      );
+    });
+    resetChart.addEventListener("mouseout", function() {
+      resetChart.setAttribute(
+        "style",
+        "padding: 12px 8px; background-color: white; color: black"
+      );
+    });
+    resetChart.addEventListener("click", function() {
+      setPassData([]);
+    });
+    toolBar.lastChild.appendChild(resetChart);
   }, []);
+
+  // change Labels
+  const changeLabels = e => {
+    var label = prompt("Please enter label name", e.target.textContent);
+    if (label != null) {
+      e.target.textContent = label;
+    }
+  }
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <FormGroup>
-          <Label for="exampleDate">Data 1</Label>
-          <Input
-            type="number"
-            name="field1"
-            id="field1"
-            placeholder="One"
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="exampleNumber">Data 2</Label>
-          <Input
-            type="number"
-            name="field2"
-            id="field2"
-            placeholder="Two"
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <Button>Submit</Button>
-      </Form>
-      <FormGroup>
-        <Label for="exampleSelect">Select</Label>
-        <Input type="select" name="select" id="exampleSelect" onChange={handleSelectChange}>
-          <option value="line">Line1</option>
-          <option value="spline">Spline</option>
-          <option value="stepLine">StepLine</option>
-          <option value="area">Area</option>
-          {/* <option value="005x">5</option> */}
-        </Input>
-      </FormGroup>
-      <CanvasChart arrayData={passData} typeChart={type}/>
+      <Row>
+        <Col xs="6">
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Data 1
+              </Label>
+              <Input
+                type="number"
+                name="field1"
+                id="field1"
+                placeholder="One"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Data 2
+              </Label>
+              <Input
+                type="number"
+                name="field2"
+                id="field2"
+                placeholder="Two"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <Button>Submit</Button>
+          </Form>
+        </Col>
+        <Col xs="6">
+          <FormGroup>
+            <Label for="exampleSelect">Choose Chart Type</Label>
+            <Input
+              type="select"
+              name="select"
+              id="exampleSelect"
+              onChange={handleSelectChange}
+            >
+              <option value="line">Line</option>
+              <option value="spline">Spline</option>
+              <option value="stepLine">StepLine</option>
+              <option value="area">Area</option>
+            </Input>
+          </FormGroup>
+          <CanvasChart arrayData={passData} typeChart={type} />
+        </Col>
+      </Row>
     </Container>
   );
 };
