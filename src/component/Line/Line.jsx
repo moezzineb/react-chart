@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Form, FormGroup, Label, Input, Container, Button, Row, Col } from "reactstrap";
+import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import classnames from 'classnames';
 import { useForm } from "react-hook-form";
-import { CanvasChart } from "./CanvasChart";
 import jsPDF from "jspdf";
+import CanvasJSReact from "../../assets/canvasjs.react";
+import { Spline } from "./Spline";
+import { StepLine } from "./StepLine";
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Formx = (state, action) => {
+export const Line = (state, action) => {
   const [passData, setPassData] = useState([
     { x: 1, y: 10 },
     { x: 2, y: 13 },
@@ -18,7 +23,7 @@ export const Formx = (state, action) => {
     { x: 10, y: 17 }
   ]);
 
-  const [type, setType] = useState('line');
+  const [activeTab, setActiveTab] = useState('1');
 
   // useForm declaration
   const { register, handleSubmit, setValue } = useForm();
@@ -39,8 +44,8 @@ export const Formx = (state, action) => {
   };
 
   // Handle select change
-  const handleSelectChange = e => {
-      setType(e.target.value)
+  const toggle = tab => {
+    if(activeTab !== tab) setActiveTab(tab);
   }
 
   // Get form data
@@ -118,14 +123,67 @@ export const Formx = (state, action) => {
     }
   }
 
+  const options = {
+    animationEnabled: true,
+    exportEnabled: true,
+    title: {
+        text: "Dynamic Line Chart"
+    },
+    axisY: {
+        title: "Bounce Rate",
+        includeZero: false,
+        suffix: "%"
+    },
+    axisX: {
+        title: "Week of Year",
+        prefix: "W",
+        interval: 2
+    },
+    data: [
+        {
+            type: 'line',
+            toolTipContent: "Week {x}: {y}%",
+            dataPoints: passData
+        }
+    ]
+};
+
   return (
     <Container>
-      <Row>
+      <Nav tabs>
+        <NavItem>
+          <NavLink
+            className={classnames({ active: activeTab === '1' })}
+            onClick={() => { toggle('1'); }}
+          >
+            Line
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink
+            className={classnames({ active: activeTab === '2' })}
+            onClick={() => { toggle('2'); }}
+          >
+            Spline
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink
+            className={classnames({ active: activeTab === '3' })}
+            onClick={() => { toggle('3'); }}
+          >
+            Step Line
+          </NavLink>
+        </NavItem>
+      </Nav>
+      <TabContent activeTab={activeTab}>
+        <TabPane tabId="1">
+        <Row>
         <Col xs="6">
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
               <Label for="exampleDate" onClick={changeLabels}>
-                Data 1
+                Line 1
               </Label>
               <Input
                 type="number"
@@ -137,7 +195,7 @@ export const Formx = (state, action) => {
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
-                Data 2
+                Line 2
               </Label>
               <Input
                 type="number"
@@ -151,23 +209,17 @@ export const Formx = (state, action) => {
           </Form>
         </Col>
         <Col xs="6">
-          <FormGroup>
-            <Label for="exampleSelect">Choose Chart Type</Label>
-            <Input
-              type="select"
-              name="select"
-              id="exampleSelect"
-              onChange={handleSelectChange}
-            >
-              <option value="line">Line</option>
-              <option value="spline">Spline</option>
-              <option value="stepLine">StepLine</option>
-              <option value="area">Area</option>
-            </Input>
-          </FormGroup>
-          <CanvasChart arrayData={passData} typeChart={type} />
+          <CanvasJSChart options={options} />
         </Col>
       </Row>
+        </TabPane>
+        <TabPane tabId="2">
+          <Spline />
+        </TabPane>
+        <TabPane tabId="3">
+          <StepLine />
+        </TabPane>
+      </TabContent>
     </Container>
   );
 };

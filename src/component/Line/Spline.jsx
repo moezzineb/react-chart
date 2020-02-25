@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { Form, FormGroup, Label, Input, Container, Button, Row, Col } from "reactstrap";
+import {
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Container,
+  Button,
+  Row,
+  Col
+} from "reactstrap";
 import { useForm } from "react-hook-form";
-import { CanvasChart } from "./CanvasChart";
 import jsPDF from "jspdf";
+import CanvasJSReact from "../../assets/canvasjs.react";
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Formx = (state, action) => {
+export const Spline = (state, action) => {
   const [passData, setPassData] = useState([
-    { x: 1, y: 10 },
-    { x: 2, y: 13 },
-    { x: 3, y: 18 },
-    { x: 4, y: 20 },
-    { x: 5, y: 17 },
-    { x: 6, y: 10 },
-    { x: 7, y: 13 },
-    { x: 8, y: 18 },
-    { x: 9, y: 20 },
-    { x: 10, y: 17 }
+    { x: new Date(2017, 0), y: 25060 },
+    { x: new Date(2017, 1), y: 27980 },
+    { x: new Date(2017, 2), y: 42800 },
+    { x: new Date(2017, 3), y: 32400 },
+    { x: new Date(2017, 4), y: 35260 },
+    { x: new Date(2017, 5), y: 33900 },
+    { x: new Date(2017, 6), y: 40000 },
+    { x: new Date(2017, 7), y: 52500 },
+    { x: new Date(2017, 8), y: 32300 },
+    { x: new Date(2017, 9), y: 42000 },
+    { x: new Date(2017, 10), y: 37160 },
+    { x: new Date(2017, 11), y: 38400 }
   ]);
-
-  const [type, setType] = useState('line');
 
   // useForm declaration
   const { register, handleSubmit, setValue } = useForm();
@@ -38,11 +48,6 @@ export const Formx = (state, action) => {
     setValue(e.target.name, e.target.value);
   };
 
-  // Handle select change
-  const handleSelectChange = e => {
-      setType(e.target.value)
-  }
-
   // Get form data
   useEffect(() => {
     register({ name: "field1" });
@@ -51,8 +56,8 @@ export const Formx = (state, action) => {
 
   // Initialise and add pdf export to the list
   useEffect(() => {
-    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[0];
-    // Add export PDF 
+    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[1];
+    // Add export PDF
     var exportCSV = document.createElement("div");
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
@@ -74,7 +79,7 @@ export const Formx = (state, action) => {
       );
     });
     exportCSV.addEventListener("click", function() {
-      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[0];
+      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[2];
       var dataURL = canvas.toDataURL();
       var doc = new jsPDF("p", "mm", "a4");
       var width = doc.internal.pageSize.getWidth();
@@ -116,7 +121,31 @@ export const Formx = (state, action) => {
     if (label != null) {
       e.target.textContent = label;
     }
-  }
+  };
+
+  const options = {
+    animationEnabled: true,
+    exportEnabled: true,
+    title: {
+      text: "Monthly Sales - 2017"
+    },
+    axisX: {
+      valueFormatString: "MMM"
+    },
+    axisY: {
+      title: "Sales (in USD)",
+      prefix: "$",
+      includeZero: false
+    },
+    data: [
+      {
+        type: "spline",
+        yValueFormatString: "$#,###",
+        xValueFormatString: "MMMM",
+        dataPoints: passData
+      }
+    ]
+  };
 
   return (
     <Container>
@@ -125,7 +154,7 @@ export const Formx = (state, action) => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
               <Label for="exampleDate" onClick={changeLabels}>
-                Data 1
+                Spline 1
               </Label>
               <Input
                 type="number"
@@ -137,7 +166,7 @@ export const Formx = (state, action) => {
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
-                Data 2
+                Spline 2
               </Label>
               <Input
                 type="number"
@@ -151,21 +180,7 @@ export const Formx = (state, action) => {
           </Form>
         </Col>
         <Col xs="6">
-          <FormGroup>
-            <Label for="exampleSelect">Choose Chart Type</Label>
-            <Input
-              type="select"
-              name="select"
-              id="exampleSelect"
-              onChange={handleSelectChange}
-            >
-              <option value="line">Line</option>
-              <option value="spline">Spline</option>
-              <option value="stepLine">StepLine</option>
-              <option value="area">Area</option>
-            </Input>
-          </FormGroup>
-          <CanvasChart arrayData={passData} typeChart={type} />
+          <CanvasJSChart options={options} />
         </Col>
       </Row>
     </Container>

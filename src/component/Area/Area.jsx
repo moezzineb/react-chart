@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Form, FormGroup, Label, Input, Container, Button, Row, Col } from "reactstrap";
 import { useForm } from "react-hook-form";
-import { CanvasChart } from "./CanvasChart";
 import jsPDF from "jspdf";
+import CanvasJSReact from "../../assets/canvasjs.react";
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Formx = (state, action) => {
+export const Area = (state, action) => {
   const [passData, setPassData] = useState([
     { x: 1, y: 10 },
     { x: 2, y: 13 },
@@ -118,6 +119,31 @@ export const Formx = (state, action) => {
     }
   }
 
+  const options = {
+    animationEnabled: true,
+    exportEnabled: true,
+    title: {
+        text: "Dynamic Line Chart"
+    },
+    axisY: {
+        title: "Bounce Rate",
+        includeZero: false,
+        suffix: "%"
+    },
+    axisX: {
+        title: "Week of Year",
+        prefix: "W",
+        interval: 2
+    },
+    data: [
+        {
+            type: type,
+            toolTipContent: "Week {x}: {y}%",
+            dataPoints: passData
+        }
+    ]
+};
+
   return (
     <Container>
       <Row>
@@ -125,7 +151,7 @@ export const Formx = (state, action) => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
               <Label for="exampleDate" onClick={changeLabels}>
-                Data 1
+                Area 1
               </Label>
               <Input
                 type="number"
@@ -137,7 +163,7 @@ export const Formx = (state, action) => {
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
-                Data 2
+                Area 2
               </Label>
               <Input
                 type="number"
@@ -159,13 +185,12 @@ export const Formx = (state, action) => {
               id="exampleSelect"
               onChange={handleSelectChange}
             >
-              <option value="line">Line</option>
+              <option value="line">Area</option>
               <option value="spline">Spline</option>
               <option value="stepLine">StepLine</option>
-              <option value="area">Area</option>
             </Input>
           </FormGroup>
-          <CanvasChart arrayData={passData} typeChart={type} />
+          <CanvasJSChart options={options} />
         </Col>
       </Row>
     </Container>
