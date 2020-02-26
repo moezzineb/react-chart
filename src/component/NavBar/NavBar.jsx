@@ -10,7 +10,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
-import { BrowserRouter as Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const HeaderMenu = props => {
   const [isOpen, setIsOpen] = useState(false);

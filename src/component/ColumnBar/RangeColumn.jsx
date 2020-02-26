@@ -14,20 +14,20 @@ import jsPDF from "jspdf";
 import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Spline = (state, action) => {
+export const RangeColumn = (state, action) => {
   const [passData, setPassData] = useState([
-    { x: new Date(2017, 0), y: 25060 },
-    { x: new Date(2017, 1), y: 27980 },
-    { x: new Date(2017, 2), y: 42800 },
-    { x: new Date(2017, 3), y: 32400 },
-    { x: new Date(2017, 4), y: 35260 },
-    { x: new Date(2017, 5), y: 33900 },
-    { x: new Date(2017, 6), y: 40000 },
-    { x: new Date(2017, 7), y: 52500 },
-    { x: new Date(2017, 8), y: 32300 },
-    { x: new Date(2017, 9), y: 42000 },
-    { x: new Date(2017, 10), y: 37160 },
-    { x: new Date(2017, 11), y: 38400 }
+    { x: new Date("2017- 01- 01"), y: [19, 26] },
+    { x: new Date("2017- 02- 01"), y: [19, 26] },
+    { x: new Date("2017- 03- 01"), y: [18, 25] },
+    { x: new Date("2017- 04- 01"), y: [15, 23] },
+    { x: new Date("2017- 05- 01"), y: [12, 20] },
+    { x: new Date("2017- 06- 01"), y: [10, 18] },
+    { x: new Date("2017- 07- 01"), y: [8, 17] },
+    { x: new Date("2017- 08- 01"), y: [9, 18] },
+    { x: new Date("2017- 09- 01"), y: [12, 20] },
+    { x: new Date("2017- 10- 01"), y: [14, 22] },
+    { x: new Date("2017- 11- 01"), y: [16, 24] },
+    { x: new Date("2017- 12- 01"), y: [18, 26] }
   ]);
 
   // useForm declaration
@@ -35,11 +35,13 @@ export const Spline = (state, action) => {
 
   // submit event click
   const onSubmit = data => {
-    if (data.field1 != null && data.field2 != null) {
-      let date = data.field1.split('-');
+    if (data.field1 != null && data.field2 != null && data.field3 != null) {
+      let arrayInterval = [];
+      arrayInterval.push(parseInt(data.field2));
+      arrayInterval.push(parseInt(data.field3));
       setPassData(passData => [
         ...passData,
-        { x: new Date(parseInt(date[0]), parseInt(date[1]) - 1), y: parseInt(data.field2) }
+        { x: new Date(data.field1), y: arrayInterval }
       ]);
     }
   };
@@ -53,11 +55,12 @@ export const Spline = (state, action) => {
   useEffect(() => {
     register({ name: "field1" });
     register({ name: "field2" });
+    register({ name: "field3" });
   }, [register]);
 
   // Initialise and add pdf export to the list
   useEffect(() => {
-    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[1];
+    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[2];
     // Add export PDF
     var exportCSV = document.createElement("div");
     var text = document.createTextNode("Save as PDF");
@@ -80,7 +83,7 @@ export const Spline = (state, action) => {
       );
     });
     exportCSV.addEventListener("click", function() {
-      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[2];
+      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[4];
       var dataURL = canvas.toDataURL();
       var doc = new jsPDF("p", "mm", "a4");
       var width = doc.internal.pageSize.getWidth();
@@ -125,24 +128,26 @@ export const Spline = (state, action) => {
   };
 
   const options = {
+    theme: "dark2",
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Monthly Sales - 2017"
+      text: "Monthly Average Temperature Variation in Sydney"
     },
     axisX: {
-      valueFormatString: "MMM"
+      valueFormatString: "MMM YYYY"
     },
     axisY: {
-      title: "Sales (in USD)",
-      prefix: "$",
-      includeZero: false
+      title: "Temperature (°C)",
+      suffix: " °C"
     },
     data: [
       {
-        type: "spline",
-        yValueFormatString: "$#,###",
-        xValueFormatString: "MMMM",
+        type: "rangeColumn",
+        indexLabel: "{y[#index]}°",
+        xValueFormatString: "MMM YYYY",
+        toolTipContent:
+          "<strong>{x}</strong></br> Max: {y[1]} °C<br/> Min: {y[0]} °C",
         dataPoints: passData
       }
     ]
@@ -170,11 +175,24 @@ export const Spline = (state, action) => {
                 Spline 2
               </Label>
               <Input
-                type="number"
+                type="text"
                 name="field2"
                 id="field2"
                 placeholder="Two"
                 onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Area 3
+              </Label>
+              <Input
+                type="number"
+                name="field3"
+                id="field3"
+                placeholder="Three"
+                onChange={handleChange}
+                step="0.1"
               />
             </FormGroup>
             <Button>Submit</Button>

@@ -12,22 +12,18 @@ import {
 import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
 import CanvasJSReact from "../../assets/canvasjs.react";
+var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Spline = (state, action) => {
+export const Bar = (state, action) => {
   const [passData, setPassData] = useState([
-    { x: new Date(2017, 0), y: 25060 },
-    { x: new Date(2017, 1), y: 27980 },
-    { x: new Date(2017, 2), y: 42800 },
-    { x: new Date(2017, 3), y: 32400 },
-    { x: new Date(2017, 4), y: 35260 },
-    { x: new Date(2017, 5), y: 33900 },
-    { x: new Date(2017, 6), y: 40000 },
-    { x: new Date(2017, 7), y: 52500 },
-    { x: new Date(2017, 8), y: 32300 },
-    { x: new Date(2017, 9), y: 42000 },
-    { x: new Date(2017, 10), y: 37160 },
-    { x: new Date(2017, 11), y: 38400 }
+    { y: 2200000000, label: "Facebook" },
+    { y: 1800000000, label: "YouTube" },
+    { y: 800000000, label: "Instagram" },
+    { y: 563000000, label: "Qzone" },
+    { y: 376000000, label: "Weibo" },
+    { y: 336000000, label: "Twitter" },
+    { y: 330000000, label: "Reddit" }
   ]);
 
   // useForm declaration
@@ -36,10 +32,12 @@ export const Spline = (state, action) => {
   // submit event click
   const onSubmit = data => {
     if (data.field1 != null && data.field2 != null) {
-      let date = data.field1.split('-');
       setPassData(passData => [
         ...passData,
-        { x: new Date(parseInt(date[0]), parseInt(date[1]) - 1), y: parseInt(data.field2) }
+        {
+          y: parseInt(data.field1),
+          label: data.field2
+        }
       ]);
     }
   };
@@ -124,25 +122,32 @@ export const Spline = (state, action) => {
     }
   };
 
+  const addSymbols = e => {
+		var suffixes = ["", "K", "M", "B"];
+		var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+		if(order > suffixes.length - 1)
+			order = suffixes.length - 1;
+		var suffix = suffixes[order];
+		return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+	}
+
   const options = {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Monthly Sales - 2017"
+      text: "Most Popular Social Networking Sites"
     },
     axisX: {
-      valueFormatString: "MMM"
+      title: "Social Network",
+      reversed: true
     },
     axisY: {
-      title: "Sales (in USD)",
-      prefix: "$",
-      includeZero: false
+      title: "Monthly Active Users",
+      labelFormatter: addSymbols
     },
     data: [
       {
-        type: "spline",
-        yValueFormatString: "$#,###",
-        xValueFormatString: "MMMM",
+        type: "bar",
         dataPoints: passData
       }
     ]
@@ -158,7 +163,7 @@ export const Spline = (state, action) => {
                 Spline 1
               </Label>
               <Input
-                type="date"
+                type="number"
                 name="field1"
                 id="field1"
                 placeholder="One"
@@ -170,7 +175,7 @@ export const Spline = (state, action) => {
                 Spline 2
               </Label>
               <Input
-                type="number"
+                type="text"
                 name="field2"
                 id="field2"
                 placeholder="Two"

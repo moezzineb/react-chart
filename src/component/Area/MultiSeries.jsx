@@ -14,20 +14,35 @@ import jsPDF from "jspdf";
 import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Spline = (state, action) => {
+export const MultiSeries = (state, action) => {
   const [passData, setPassData] = useState([
-    { x: new Date(2017, 0), y: 25060 },
-    { x: new Date(2017, 1), y: 27980 },
-    { x: new Date(2017, 2), y: 42800 },
-    { x: new Date(2017, 3), y: 32400 },
-    { x: new Date(2017, 4), y: 35260 },
-    { x: new Date(2017, 5), y: 33900 },
-    { x: new Date(2017, 6), y: 40000 },
-    { x: new Date(2017, 7), y: 52500 },
-    { x: new Date(2017, 8), y: 32300 },
-    { x: new Date(2017, 9), y: 42000 },
-    { x: new Date(2017, 10), y: 37160 },
-    { x: new Date(2017, 11), y: 38400 }
+    { x: new Date("2017- 01- 01"), y: 84.927 },
+    { x: new Date("2017- 02- 01"), y: 82.609 },
+    { x: new Date("2017- 03- 01"), y: 81.428 },
+    { x: new Date("2017- 04- 01"), y: 83.259 },
+    { x: new Date("2017- 05- 01"), y: 83.153 },
+    { x: new Date("2017- 06- 01"), y: 84.18 },
+    { x: new Date("2017- 07- 01"), y: 84.84 },
+    { x: new Date("2017- 08- 01"), y: 82.671 },
+    { x: new Date("2017- 09- 01"), y: 87.496 },
+    { x: new Date("2017- 10- 01"), y: 86.007 },
+    { x: new Date("2017- 11- 01"), y: 87.233 },
+    { x: new Date("2017- 12- 01"), y: 86.276 }
+  ]);
+
+  const [passData2, setPassData2] = useState([
+    { x: new Date("2017- 01- 01"), y: 67.515 },
+    { x: new Date("2017- 02- 01"), y: 66.725 },
+    { x: new Date("2017- 03- 01"), y: 64.86 },
+    { x: new Date("2017- 04- 01"), y: 64.29 },
+    { x: new Date("2017- 05- 01"), y: 64.51 },
+    { x: new Date("2017- 06- 01"), y: 64.62 },
+    { x: new Date("2017- 07- 01"), y: 64.2 },
+    { x: new Date("2017- 08- 01"), y: 63.935 },
+    { x: new Date("2017- 09- 01"), y: 65.31 },
+    { x: new Date("2017- 10- 01"), y: 64.75 },
+    { x: new Date("2017- 11- 01"), y: 64.49 },
+    { x: new Date("2017- 12- 01"), y: 63.84 }
   ]);
 
   // useForm declaration
@@ -36,10 +51,16 @@ export const Spline = (state, action) => {
   // submit event click
   const onSubmit = data => {
     if (data.field1 != null && data.field2 != null) {
-      let date = data.field1.split('-');
       setPassData(passData => [
         ...passData,
-        { x: new Date(parseInt(date[0]), parseInt(date[1]) - 1), y: parseInt(data.field2) }
+        { x: new Date(data.field1), y: parseFloat(data.field2) }
+      ]);
+    }
+
+    if (data.field3 != null && data.field4 != null) {
+      setPassData2(passData2 => [
+        ...passData2,
+        { x: new Date(data.field3), y: parseFloat(data.field4) }
       ]);
     }
   };
@@ -53,6 +74,8 @@ export const Spline = (state, action) => {
   useEffect(() => {
     register({ name: "field1" });
     register({ name: "field2" });
+    register({ name: "field3" });
+    register({ name: "field4" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -112,6 +135,7 @@ export const Spline = (state, action) => {
     });
     resetChart.addEventListener("click", function() {
       setPassData([]);
+      setPassData2([]);
     });
     toolBar.lastChild.appendChild(resetChart);
   }, []);
@@ -128,22 +152,36 @@ export const Spline = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Monthly Sales - 2017"
+      text: "Comparison of Exchange Rates - 2017"
     },
-    axisX: {
-      valueFormatString: "MMM"
-    },
+    subtitles: [
+      {
+        text: "GBP & USD to INR"
+      }
+    ],
     axisY: {
-      title: "Sales (in USD)",
-      prefix: "$",
-      includeZero: false
+      includeZero: false,
+      prefix: "₹"
+    },
+    toolTip: {
+      shared: true
     },
     data: [
       {
-        type: "spline",
-        yValueFormatString: "$#,###",
-        xValueFormatString: "MMMM",
+        type: "area",
+        name: "GBP",
+        showInLegend: true,
+        xValueFormatString: "MMM YYYY",
+        yValueFormatString: "₹#,##0.##",
         dataPoints: passData
+      },
+      {
+        type: "area",
+        name: "USD",
+        showInLegend: true,
+        xValueFormatString: "MMM YYYY",
+        yValueFormatString: "₹#,##0.##",
+        dataPoints: passData2
       }
     ]
   };
@@ -155,26 +193,52 @@ export const Spline = (state, action) => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
               <Label for="exampleDate" onClick={changeLabels}>
-                Spline 1
+                Date 1st section
               </Label>
               <Input
                 type="date"
                 name="field1"
                 id="field1"
-                placeholder="One"
+                placeholder="Date 1st section"
                 onChange={handleChange}
               />
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
-                Spline 2
+                Value 1st section
               </Label>
               <Input
                 type="number"
                 name="field2"
                 id="field2"
-                placeholder="Two"
+                placeholder="Value 1st section"
                 onChange={handleChange}
+                step="0.1"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Date 2nd section
+              </Label>
+              <Input
+                type="date"
+                name="field3"
+                id="field3"
+                placeholder="Date 2nd section"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Value 2nd section
+              </Label>
+              <Input
+                type="number"
+                name="field4"
+                id="field4"
+                placeholder="Value 2nd section"
+                onChange={handleChange}
+                step="0.1"
               />
             </FormGroup>
             <Button>Submit</Button>

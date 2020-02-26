@@ -15,25 +15,20 @@ import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
 import CanvasJSReact from "../../assets/canvasjs.react";
 // Import sub components
-import { MultiSeries } from "./MultiSeries";
-import { Spline } from "./Spline";
-import { Step } from "./Step";
-import { Range } from "./Range";
-import { RangeSpline } from "./RangeSpline";
-import { Stacked } from "./Stacked";
-import { StackedFull } from "./StackedFull";
+import { Bar } from "./Bar";
+import { RangeColumn } from "./RangeColumn";
+import { StackedColumn } from "./StackedColumn";
+import { StackedColumnFull } from "./StackedColumnFull";
 // End Import
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Area = (state, action) => {
+export const Column = (state, action) => {
   const [passData, setPassData] = useState([
-    { x: new Date(2017, 0), y: 7.6 },
-    { x: new Date(2016, 0), y: 7.3 },
-    { x: new Date(2015, 0), y: 6.4 },
-    { x: new Date(2014, 0), y: 5.3 },
-    { x: new Date(2013, 0), y: 4.5 },
-    { x: new Date(2012, 0), y: 3.8 },
-    { x: new Date(2011, 0), y: 3.2 }
+    { label: "Apple", y: 10 },
+    { label: "Orange", y: 15 },
+    { label: "Banana", y: 25 },
+    { label: "Mango", y: 30 },
+    { label: "Grape", y: 28 }
   ]);
 
   // useForm declaration
@@ -42,10 +37,9 @@ export const Area = (state, action) => {
   // submit event click
   const onSubmit = data => {
     if (data.field1 != null && data.field2 != null) {
-      let date = data.field1.split("-");
       setPassData(passData => [
         ...passData,
-        { x: new Date(parseInt(date[0]), 0), y: parseFloat(data.field2) }
+        { label: data.field1, y: parseFloat(data.field2) }
       ]);
     }
   };
@@ -141,17 +135,11 @@ export const Area = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Number of iPhones Sold"
-    },
-    axisY: {
-      title: "Number of iPhones ( in Million )",
-      includeZero: false
+      text: "Basic Column Chart"
     },
     data: [
       {
-        type: "area",
-        xValueFormatString: "YYYY",
-        yValueFormatString: "#,##0.## Million",
+        type: "column",
         dataPoints: passData
       }
     ]
@@ -167,7 +155,7 @@ export const Area = (state, action) => {
               toggle("1");
             }}
           >
-            Area
+            Column
           </NavLink>
         </NavItem>
         <NavItem>
@@ -177,7 +165,7 @@ export const Area = (state, action) => {
               toggle("2");
             }}
           >
-            Multi Series Area
+            Bar
           </NavLink>
         </NavItem>
         <NavItem>
@@ -187,7 +175,7 @@ export const Area = (state, action) => {
               toggle("3");
             }}
           >
-            Spline Area
+            Range Column
           </NavLink>
         </NavItem>
         <NavItem>
@@ -197,7 +185,7 @@ export const Area = (state, action) => {
               toggle("4");
             }}
           >
-            Step Area
+            Stacked Column
           </NavLink>
         </NavItem>
         <NavItem>
@@ -207,7 +195,7 @@ export const Area = (state, action) => {
               toggle("5");
             }}
           >
-            Range Area
+            Stacked Column 100%
           </NavLink>
         </NavItem>
         <NavItem>
@@ -217,7 +205,7 @@ export const Area = (state, action) => {
               toggle("6");
             }}
           >
-            Range Spline
+            Range Bar
           </NavLink>
         </NavItem>
         <NavItem>
@@ -227,7 +215,7 @@ export const Area = (state, action) => {
               toggle("7");
             }}
           >
-            Stacked
+            Stacked Bar
           </NavLink>
         </NavItem>
         <NavItem>
@@ -237,7 +225,17 @@ export const Area = (state, action) => {
               toggle("8");
             }}
           >
-            Stacked Bar
+            Stacked Bar 100%
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink
+            className={classnames({ active: activeTab === "9" })}
+            onClick={() => {
+              toggle("9");
+            }}
+          >
+            Waterfall
           </NavLink>
         </NavItem>
       </Nav>
@@ -251,7 +249,7 @@ export const Area = (state, action) => {
                     Area 1
                   </Label>
                   <Input
-                    type="date"
+                    type="text"
                     name="field1"
                     id="field1"
                     placeholder="One"
@@ -280,25 +278,28 @@ export const Area = (state, action) => {
           </Row>
         </TabPane>
         <TabPane tabId="2">
-          <MultiSeries />
+          <Bar />
         </TabPane>
         <TabPane tabId="3">
-          <Spline />
+          <RangeColumn />
         </TabPane>
         <TabPane tabId="4">
-          <Step />
+          <StackedColumn />
         </TabPane>
         <TabPane tabId="5">
-          <Range />
+          <StackedColumnFull />
         </TabPane>
         <TabPane tabId="6">
-          <RangeSpline />
+          <h1>5</h1>
         </TabPane>
         <TabPane tabId="7">
-          <Stacked />
+          <h1>6</h1>
         </TabPane>
         <TabPane tabId="8">
-          <StackedFull />
+          <h1>7</h1>
+        </TabPane>
+        <TabPane tabId="9">
+          <h1>9</h1>
         </TabPane>
       </TabContent>
     </Container>

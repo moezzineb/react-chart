@@ -14,20 +14,20 @@ import jsPDF from "jspdf";
 import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Spline = (state, action) => {
+export const Range = (state, action) => {
   const [passData, setPassData] = useState([
-    { x: new Date(2017, 0), y: 25060 },
-    { x: new Date(2017, 1), y: 27980 },
-    { x: new Date(2017, 2), y: 42800 },
-    { x: new Date(2017, 3), y: 32400 },
-    { x: new Date(2017, 4), y: 35260 },
-    { x: new Date(2017, 5), y: 33900 },
-    { x: new Date(2017, 6), y: 40000 },
-    { x: new Date(2017, 7), y: 52500 },
-    { x: new Date(2017, 8), y: 32300 },
-    { x: new Date(2017, 9), y: 42000 },
-    { x: new Date(2017, 10), y: 37160 },
-    { x: new Date(2017, 11), y: 38400 }
+    { x: new Date("2017-01"), y: [37, 55] },
+    { x: new Date("2017-02"), y: [37, 57] },
+    { x: new Date("2017-03"), y: [43, 63] },
+    { x: new Date("2017-04"), y: [46, 68] },
+    { x: new Date("2017-05"), y: [55, 75] },
+    { x: new Date("2017-06"), y: [63, 84] },
+    { x: new Date("2017-07"), y: [66, 90] },
+    { x: new Date("2017-08"), y: [64, 86] },
+    { x: new Date("2017-09"), y: [61, 81] },
+    { x: new Date("2017-10"), y: [54, 73] },
+    { x: new Date("2017-11"), y: [46, 64] },
+    { x: new Date("2017-12"), y: [39, 59] }
   ]);
 
   // useForm declaration
@@ -35,11 +35,14 @@ export const Spline = (state, action) => {
 
   // submit event click
   const onSubmit = data => {
-    if (data.field1 != null && data.field2 != null) {
-      let date = data.field1.split('-');
+    if (data.field1 != null && data.field2 != null && data.field3 != null) {
+      let date = data.field1.split("-");
+      let arrayInterval = [];
+      arrayInterval.push(parseInt(data.field2));
+      arrayInterval.push(parseInt(data.field3));
       setPassData(passData => [
         ...passData,
-        { x: new Date(parseInt(date[0]), parseInt(date[1]) - 1), y: parseInt(data.field2) }
+        { x: new Date(date[0]+'-'+date[1]), y: arrayInterval }
       ]);
     }
   };
@@ -53,11 +56,12 @@ export const Spline = (state, action) => {
   useEffect(() => {
     register({ name: "field1" });
     register({ name: "field2" });
+    register({ name: "field3" });
   }, [register]);
 
   // Initialise and add pdf export to the list
   useEffect(() => {
-    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[1];
+    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[4];
     // Add export PDF
     var exportCSV = document.createElement("div");
     var text = document.createTextNode("Save as PDF");
@@ -80,7 +84,7 @@ export const Spline = (state, action) => {
       );
     });
     exportCSV.addEventListener("click", function() {
-      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[2];
+      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[8];
       var dataURL = canvas.toDataURL();
       var doc = new jsPDF("p", "mm", "a4");
       var width = doc.internal.pageSize.getWidth();
@@ -128,21 +132,23 @@ export const Spline = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Monthly Sales - 2017"
-    },
-    axisX: {
-      valueFormatString: "MMM"
+      text: "Temperature in Rome - 2017"
     },
     axisY: {
-      title: "Sales (in USD)",
-      prefix: "$",
-      includeZero: false
+      includeZero: false,
+      title: "Temperature (°F)",
+      suffix: " °F"
+    },
+    axisX: {
+      valueFormatString: "MMM YYYY"
     },
     data: [
       {
-        type: "spline",
-        yValueFormatString: "$#,###",
-        xValueFormatString: "MMMM",
+        type: "rangeArea",
+        xValueFormatString: "MMM YYYY",
+        yValueFormatString: "#0.## °F",
+        toolTipContent:
+          ' <span style="color:#6D78AD">{x}</span><br><b>Min:</b> {y[0]}<br><b>Max:</b> {y[1]}',
         dataPoints: passData
       }
     ]
@@ -155,7 +161,7 @@ export const Spline = (state, action) => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
               <Label for="exampleDate" onClick={changeLabels}>
-                Spline 1
+                Area 1
               </Label>
               <Input
                 type="date"
@@ -167,7 +173,7 @@ export const Spline = (state, action) => {
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
-                Spline 2
+                Area 2
               </Label>
               <Input
                 type="number"
@@ -175,6 +181,20 @@ export const Spline = (state, action) => {
                 id="field2"
                 placeholder="Two"
                 onChange={handleChange}
+                step="0.1"
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Area 3
+              </Label>
+              <Input
+                type="number"
+                name="field3"
+                id="field3"
+                placeholder="Three"
+                onChange={handleChange}
+                step="0.1"
               />
             </FormGroup>
             <Button>Submit</Button>

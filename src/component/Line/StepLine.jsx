@@ -36,7 +36,7 @@ export const StepLine = (state, action) => {
     if (data.field1 != null && data.field2 != null) {
       setPassData(passData => [
         ...passData,
-        { x: parseInt(data.field1), y: parseInt(data.field2) }
+        { x: new Date(data.field1), y: parseInt(data.field2) }
       ]);
     }
   };
@@ -151,7 +151,7 @@ export const StepLine = (state, action) => {
                 Spline 1
               </Label>
               <Input
-                type="number"
+                type="date"
                 name="field1"
                 id="field1"
                 placeholder="One"
