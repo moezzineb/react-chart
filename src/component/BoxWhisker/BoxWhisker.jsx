@@ -15,30 +15,18 @@ import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
 import CanvasJSReact from "../../assets/canvasjs.react";
 // Import sub components
-import { ScatterMakers } from "./ScatterMakers";
-import { Bubble } from "./Bubble";
+import { BoxWhiskerCustom } from "./BoxWhiskerCustom";
 // End Import
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Scatter = (state, action) => {
+export const BoxWhisker = (state, action) => {
   const [passData, setPassData] = useState([
-    { x: 14.2, y: 215 },
-    { x: 12.9, y: 175 },
-    { x: 16.4, y: 325 },
-    { x: 26.9, y: 635 },
-    { x: 32.5, y: 464 },
-    { x: 22.1, y: 522 },
-    { x: 19.4, y: 412 },
-    { x: 25.1, y: 614 },
-    { x: 34.9, y: 374 },
-    { x: 28.7, y: 625 },
-    { x: 23.4, y: 544 },
-    { x: 31.4, y: 502 },
-    { x: 40.8, y: 262 },
-    { x: 37.4, y: 312 },
-    { x: 42.3, y: 202 },
-    { x: 39.1, y: 302 },
-    { x: 17.2, y: 408 },
+    { label: "Bread", y: [179, 256, 300, 418, 274] },
+    { label: "Cake", y: [252, 346, 409, 437, 374.5] },
+    { label: "Biscuit", y: [236, 281.5, 336.5, 428, 313] },
+    { label: "Doughnut", y: [340, 382, 430, 452, 417] },
+    { label: "Pancakes", y: [194, 224.5, 342, 384, 251] },
+    { label: "Bagels", y: [241, 255, 276.5, 294, 274.5] },
   ]);
 
   // useForm declaration
@@ -48,11 +36,21 @@ export const Scatter = (state, action) => {
   const onSubmit = data => {
     if (
       data.field1 != null &&
-      data.field2 != null 
+      data.field2 != null &&
+      data.field3 != null &&
+      data.field4 != null &&
+      data.field5 != null &&
+      data.field6 != null
     ) {
+      let arrayData = [];
+      arrayData.push(parseFloat(data.field2));
+      arrayData.push(parseFloat(data.field3));
+      arrayData.push(parseFloat(data.field4));
+      arrayData.push(parseFloat(data.field5));
+      arrayData.push(parseFloat(data.field6));
       setPassData(passData => [
         ...passData,
-        { x: parseFloat(data.field1), y: parseInt(data.field2) },
+        { label: data.field1, y: arrayData },
       ]);
     }
   };
@@ -66,6 +64,10 @@ export const Scatter = (state, action) => {
   useEffect(() => {
     register({ name: "field1" });
     register({ name: "field2" });
+    register({ name: "field3" });
+    register({ name: "field4" });
+    register({ name: "field5" });
+    register({ name: "field6" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -147,32 +149,17 @@ export const Scatter = (state, action) => {
   const options = {
     animationEnabled: true,
     exportEnabled: true,
-    theme: "dark2",
-    zoomEnabled: true,
     title: {
-      text: "Ice Cream Sales vs Temperature",
-    },
-    axisX: {
-      title: "Temperature (in °C)",
-      suffix: "°C",
-      crosshair: {
-        enabled: true,
-        snapToDataPoint: true,
-      },
+      text: "Energy in Baked Foods",
     },
     axisY: {
-      title: "Sales",
+      title: "Energy Per 100 g (kcal/100g)",
       includeZero: false,
-      crosshair: {
-        enabled: true,
-        snapToDataPoint: true,
-      },
     },
     data: [
       {
-        type: "scatter",
-        markerSize: 15,
-        toolTipContent: "<b>Temperature: </b>{x}°C<br/><b>Sales: </b>{y}",
+        type: "boxAndWhisker",
+        yValueFormatString: '#,##0.# "kcal/100g"',
         dataPoints: passData,
       },
     ],
@@ -188,7 +175,7 @@ export const Scatter = (state, action) => {
               toggle("1");
             }}
           >
-            Scatter / Point
+            Box And Whisker
           </NavLink>
         </NavItem>
         <NavItem>
@@ -198,17 +185,7 @@ export const Scatter = (state, action) => {
               toggle("2");
             }}
           >
-            Scatter with Custom Markers
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === "3" })}
-            onClick={() => {
-              toggle("3");
-            }}
-          >
-            Bubble
+            Box And Whisker with Customization
           </NavLink>
         </NavItem>
       </Nav>
@@ -222,7 +199,7 @@ export const Scatter = (state, action) => {
                     Area 1
                   </Label>
                   <Input
-                    type="number"
+                    type="text"
                     name="field1"
                     id="field1"
                     placeholder="One"
@@ -243,6 +220,58 @@ export const Scatter = (state, action) => {
                     step="0.1"
                   />
                 </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Area 3
+                  </Label>
+                  <Input
+                    type="number"
+                    name="field3"
+                    id="field3"
+                    placeholder="Three"
+                    onChange={handleChange}
+                    step="0.1"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Area 4
+                  </Label>
+                  <Input
+                    type="number"
+                    name="field4"
+                    id="field4"
+                    placeholder="Four"
+                    onChange={handleChange}
+                    step="0.1"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Area 5
+                  </Label>
+                  <Input
+                    type="number"
+                    name="field5"
+                    id="field5"
+                    placeholder="Five"
+                    onChange={handleChange}
+                    step="0.1"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Area 2
+                  </Label>
+                  <Input
+                    type="number"
+                    name="field6"
+                    id="field6"
+                    placeholder="Six"
+                    onChange={handleChange}
+                    step="0.1"
+                  />
+                </FormGroup>
                 <Button>Submit</Button>
               </Form>
             </Col>
@@ -252,10 +281,7 @@ export const Scatter = (state, action) => {
           </Row>
         </TabPane>
         <TabPane tabId="2">
-          <ScatterMakers />
-        </TabPane>
-        <TabPane tabId="3">
-          <Bubble />
+          <BoxWhiskerCustom />
         </TabPane>
       </TabContent>
     </Container>

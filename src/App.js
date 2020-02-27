@@ -7,6 +7,7 @@ import { Column } from "./component/ColumnBar/Column";
 import { Pie } from "./component/PieFunnel/Pie";
 import { Candlestick } from "./component/Financial/Candlestick";
 import { Scatter } from "./component/ScatterBubble/Scatter";
+import { BoxWhisker } from "./component/BoxWhisker/BoxWhisker";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/PieFunnel" exact component={Pie} />
         <Route path="/Financial" exact component={Candlestick} />
         <Route path="/ScatterBubble" exact component={Scatter} />
+        <Route path="/BoxWhisker" exact component={BoxWhisker} />
       </Router>
     </div>
   );
