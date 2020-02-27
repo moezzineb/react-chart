@@ -160,7 +160,7 @@ export const RangeColumn = (state, action) => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
               <Label for="exampleDate" onClick={changeLabels}>
-                Spline 1
+                Range 1
               </Label>
               <Input
                 type="date"
@@ -172,7 +172,7 @@ export const RangeColumn = (state, action) => {
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
-                Spline 2
+                Range 2
               </Label>
               <Input
                 type="text"

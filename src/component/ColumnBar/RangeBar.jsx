@@ -12,18 +12,17 @@ import {
 import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
 import CanvasJSReact from "../../assets/canvasjs.react";
-var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Bar = (state, action) => {
+export const RangeBar = (state, action) => {
   const [passData, setPassData] = useState([
-    { y: 2200000000, label: "Facebook" },
-    { y: 1800000000, label: "YouTube" },
-    { y: 800000000, label: "Instagram" },
-    { y: 563000000, label: "Qzone" },
-    { y: 376000000, label: "Weibo" },
-    { y: 336000000, label: "Twitter" },
-    { y: 330000000, label: "Reddit" }
+    { label: "Minicompact Cars", y: [1450, 3550] },
+    { label: "Subcompact Cars", y: [550, 3370] },
+    { label: "Compact Cars", y: [800, 2750] },
+    { label: "Midsize Cars", y: [500, 3250] },
+    { label: "Large Cars", y: [650, 3300] },
+    { label: "Small Station Wagons", y: [550, 2100] },
+    { label: "Midsize Station Wagons", y: [1600, 2550] }
   ]);
 
   // useForm declaration
@@ -31,13 +30,13 @@ export const Bar = (state, action) => {
 
   // submit event click
   const onSubmit = data => {
-    if (data.field1 != null && data.field2 != null) {
+    if (data.field1 != null && data.field2 != null && data.field3 != null) {
+      let arrayInterval = [];
+      arrayInterval.push(parseInt(data.field2));
+      arrayInterval.push(parseInt(data.field3));
       setPassData(passData => [
         ...passData,
-        {
-          y: parseInt(data.field1),
-          label: data.field2
-        }
+        { label: data.field1, y: arrayInterval }
       ]);
     }
   };
@@ -51,11 +50,12 @@ export const Bar = (state, action) => {
   useEffect(() => {
     register({ name: "field1" });
     register({ name: "field2" });
+    register({ name: "field3" });
   }, [register]);
 
   // Initialise and add pdf export to the list
   useEffect(() => {
-    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[1];
+    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[5];
     // Add export PDF
     var exportCSV = document.createElement("div");
     var text = document.createTextNode("Save as PDF");
@@ -78,7 +78,7 @@ export const Bar = (state, action) => {
       );
     });
     exportCSV.addEventListener("click", function() {
-      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[2];
+      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[10];
       var dataURL = canvas.toDataURL();
       var doc = new jsPDF("p", "mm", "a4");
       var width = doc.internal.pageSize.getWidth();
@@ -122,32 +122,29 @@ export const Bar = (state, action) => {
     }
   };
 
-  const addSymbols = e => {
-		var suffixes = ["", "K", "M", "B"];
-		var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
-		if(order > suffixes.length - 1)
-			order = suffixes.length - 1;
-		var suffix = suffixes[order];
-		return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
-	}
-
   const options = {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Most Popular Social Networking Sites"
+      text: "Annual Fuel Cost of Vehicles",
+      fontFamily: "helvetica"
     },
-    axisX: {
-      title: "Social Network",
-      reversed: true
-    },
+    subtitles: [
+      {
+        text: "Based on Vehicle Classes",
+        fontFamily: "helvetica"
+      }
+    ],
     axisY: {
-      title: "Monthly Active Users",
-      labelFormatter: addSymbols
+      title: "Annual Fuel Cost",
+      prefix: "$",
+      lineThickness: 1
     },
     data: [
       {
-        type: "bar",
+        type: "rangeBar",
+        indexLabel: "${y[#index]}",
+        yValueFormatString: "#,##0",
         dataPoints: passData
       }
     ]
@@ -160,10 +157,10 @@ export const Bar = (state, action) => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
               <Label for="exampleDate" onClick={changeLabels}>
-                Bar 1
+                Spline 1
               </Label>
               <Input
-                type="number"
+                type="text"
                 name="field1"
                 id="field1"
                 placeholder="One"
@@ -172,14 +169,27 @@ export const Bar = (state, action) => {
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
-                Bar 2
+                Spline 2
               </Label>
               <Input
-                type="text"
+                type="number"
                 name="field2"
                 id="field2"
                 placeholder="Two"
                 onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Area 3
+              </Label>
+              <Input
+                type="number"
+                name="field3"
+                id="field3"
+                placeholder="Three"
+                onChange={handleChange}
+                step="0.1"
               />
             </FormGroup>
             <Button>Submit</Button>

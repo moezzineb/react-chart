@@ -19,6 +19,10 @@ import { Bar } from "./Bar";
 import { RangeColumn } from "./RangeColumn";
 import { StackedColumn } from "./StackedColumn";
 import { StackedColumnFull } from "./StackedColumnFull";
+import { RangeBar } from "./RangeBar";
+import { StackedBar } from "./StackedBar";
+import { StackedBarFull } from "./StackedBarFull";
+import { Waterfall } from "./Waterfall";
 // End Import
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -246,7 +250,7 @@ export const Column = (state, action) => {
               <Form onSubmit={handleSubmit(onSubmit)}>
                 <FormGroup>
                   <Label for="exampleDate" onClick={changeLabels}>
-                    Area 1
+                    Column 1
                   </Label>
                   <Input
                     type="text"
@@ -258,7 +262,7 @@ export const Column = (state, action) => {
                 </FormGroup>
                 <FormGroup>
                   <Label for="exampleNumber" onClick={changeLabels}>
-                    Area 2
+                    Column 2
                   </Label>
                   <Input
                     type="number"
@@ -290,16 +294,16 @@ export const Column = (state, action) => {
           <StackedColumnFull />
         </TabPane>
         <TabPane tabId="6">
-          <h1>5</h1>
+          <RangeBar />
         </TabPane>
         <TabPane tabId="7">
-          <h1>6</h1>
+          <StackedBar />
         </TabPane>
         <TabPane tabId="8">
-          <h1>7</h1>
+          <StackedBarFull />
         </TabPane>
         <TabPane tabId="9">
-          <h1>9</h1>
+          <Waterfall />
         </TabPane>
       </TabContent>
     </Container>

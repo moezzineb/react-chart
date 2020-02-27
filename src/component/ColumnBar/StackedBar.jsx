@@ -14,44 +14,55 @@ import jsPDF from "jspdf";
 import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const StackedColumnFull = (state, action) => {
+export const StackedBar = (state, action) => {
   const [passData, setPassData] = useState([
-    { label: "United States", y: 1118 },
-    { label: "Soviet Union", y: 473 },
-    { label: "Great Britain", y: 273 },
-    { label: "France", y: 243 },
-    { label: "Germany", y: 269 },
-    { label: "Italy", y: 243 },
-    { label: "Sweden", y: 195 },
-    { label: "China", y: 236 },
-    { label: "Russia", y: 194 },
-    { label: "East Germany", y: 192 }
+    { x: new Date(2018, 5, 25), y: 56 },
+    { x: new Date(2018, 5, 26), y: 45 },
+    { x: new Date(2018, 5, 27), y: 71 },
+    { x: new Date(2018, 5, 28), y: 41 },
+    { x: new Date(2018, 5, 29), y: 60 },
+    { x: new Date(2018, 5, 30), y: 75 },
+    { x: new Date(2018, 6, 1), y: 98 }
   ]);
 
   const [passData2, setPassData2] = useState([
-    { label: "United States", y: 897 },
-    { label: "Soviet Union", y: 376 },
-    { label: "Great Britain", y: 299 },
-    { label: "France", y: 272 },
-    { label: "Germany", y: 272 },
-    { label: "Italy", y: 212 },
-    { label: "Sweden", y: 210 },
-    { label: "China", y: 189 },
-    { label: "Russia", y: 156 },
-    { label: "East Germany", y: 165 }
+    { x: new Date(2018, 5, 25), y: 86 },
+    { x: new Date(2018, 5, 26), y: 95 },
+    { x: new Date(2018, 5, 27), y: 71 },
+    { x: new Date(2018, 5, 28), y: 58 },
+    { x: new Date(2018, 5, 29), y: 60 },
+    { x: new Date(2018, 5, 30), y: 65 },
+    { x: new Date(2018, 6, 1), y: 89 }
   ]);
 
   const [passData3, setPassData3] = useState([
-    { label: "United States", y: 789 },
-    { label: "Soviet Union", y: 355 },
-    { label: "Great Britain", y: 303 },
-    { label: "France", y: 310 },
-    { label: "Germany", y: 283 },
-    { label: "Italy", y: 236 },
-    { label: "Sweden", y: 233 },
-    { label: "China", y: 174 },
-    { label: "Russia", y: 187 },
-    { label: "East Germany", y: 162 }
+    { x: new Date(2018, 5, 25), y: 48 },
+    { x: new Date(2018, 5, 26), y: 45 },
+    { x: new Date(2018, 5, 27), y: 41 },
+    { x: new Date(2018, 5, 28), y: 55 },
+    { x: new Date(2018, 5, 29), y: 80 },
+    { x: new Date(2018, 5, 30), y: 85 },
+    { x: new Date(2018, 6, 1), y: 83 }
+  ]);
+
+  const [passData4, setPassData4] = useState([
+    { x: new Date(2018, 5, 25), y: 61 },
+    { x: new Date(2018, 5, 26), y: 55 },
+    { x: new Date(2018, 5, 27), y: 61 },
+    { x: new Date(2018, 5, 28), y: 75 },
+    { x: new Date(2018, 5, 29), y: 80 },
+    { x: new Date(2018, 5, 30), y: 85 },
+    { x: new Date(2018, 6, 1), y: 105 }
+  ]);
+
+  const [passData5, setPassData5] = useState([
+    { x: new Date(2018, 5, 25), y: 52 },
+    { x: new Date(2018, 5, 26), y: 55 },
+    { x: new Date(2018, 5, 27), y: 20 },
+    { x: new Date(2018, 5, 28), y: 35 },
+    { x: new Date(2018, 5, 29), y: 30 },
+    { x: new Date(2018, 5, 30), y: 45 },
+    { x: new Date(2018, 6, 1), y: 25 }
   ]);
 
   // useForm declaration
@@ -60,23 +71,57 @@ export const StackedColumnFull = (state, action) => {
   // submit event click
   const onSubmit = data => {
     if (data.field1 != null && data.field2 != null) {
+      let date = data.field1.split("-");
       setPassData(passData => [
         ...passData,
-        { label: data.field1, y: parseInt(data.field2) }
+        {
+          x: new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2])),
+          y: parseFloat(data.field2)
+        }
       ]);
     }
 
     if (data.field3 != null && data.field4 != null) {
+      let date = data.field3.split("-");
       setPassData2(passData2 => [
         ...passData2,
-        { label: data.field3, y: parseInt(data.field4) }
+        {
+          x: new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2])),
+          y: parseFloat(data.field4)
+        }
       ]);
     }
 
     if (data.field5 != null && data.field6 != null) {
+      let date = data.field5.split("-");
       setPassData3(passData3 => [
         ...passData3,
-        { label: data.field5, y: parseInt(data.field6) }
+        {
+          x: new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2])),
+          y: parseFloat(data.field6)
+        }
+      ]);
+    }
+
+    if (data.field7 != null && data.field8 != null) {
+      let date = data.field7.split("-");
+      setPassData4(passData4 => [
+        ...passData4,
+        {
+          x: new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2])),
+          y: parseFloat(data.field8)
+        }
+      ]);
+    }
+
+    if (data.field9 != null && data.field10 != null) {
+      let date = data.field9.split("-");
+      setPassData5(passData5 => [
+        ...passData5,
+        {
+          x: new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2])),
+          y: parseFloat(data.field10)
+        }
       ]);
     }
   };
@@ -94,11 +139,15 @@ export const StackedColumnFull = (state, action) => {
     register({ name: "field4" });
     register({ name: "field5" });
     register({ name: "field6" });
+    register({ name: "field7" });
+    register({ name: "field8" });
+    register({ name: "field9" });
+    register({ name: "field10" });
   }, [register]);
 
   // Initialise and add pdf export to the list
   useEffect(() => {
-    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[4];
+    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[6];
     // Add export PDF
     var exportCSV = document.createElement("div");
     var text = document.createTextNode("Save as PDF");
@@ -121,7 +170,7 @@ export const StackedColumnFull = (state, action) => {
       );
     });
     exportCSV.addEventListener("click", function() {
-      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[8];
+      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[12];
       var dataURL = canvas.toDataURL();
       var doc = new jsPDF("p", "mm", "a4");
       var width = doc.internal.pageSize.getWidth();
@@ -155,6 +204,8 @@ export const StackedColumnFull = (state, action) => {
       setPassData([]);
       setPassData2([]);
       setPassData3([]);
+      setPassData4([]);
+      setPassData5([]);
     });
     toolBar.lastChild.appendChild(resetChart);
   }, []);
@@ -176,55 +227,65 @@ export const StackedColumnFull = (state, action) => {
     // this.chart.render();
   };
 
-  const [countries, setCountries] = useState([]);
-  useEffect(
-     () => {
-      const getCountries = async () => {
-        const response = await fetch('https://restcountries.eu/rest/v2/all?fields=name');
-        const jsonRespose = await response.json();
-        setCountries(jsonRespose);
-      }
-      getCountries();
-    },[]);
-
   const options = {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "All Time Summer Olympic Medals"
+      text: "Evening Sales in a Restaurant"
     },
-    legend: {
-      verticalAlign: "center",
-      horizontalAlign: "right",
-      reversed: true,
-      cursor: "pointer",
-      fontSize: 16,
-      itemclick: toggleDataSeries
+    axisX: {
+      valueFormatString: "DDD"
+    },
+    axisY: {
+      prefix: "$"
     },
     toolTip: {
       shared: true
     },
+    legend: {
+      cursor: "pointer",
+      itemclick: toggleDataSeries
+    },
     data: [
       {
-        type: "stackedColumn100",
-        name: "Gold",
-        showInLegend: true,
-        color: "#D4AF37",
+        type: "stackedBar",
+        name: "Meals",
+        showInLegend: "true",
+        xValueFormatString: "DD, MMM",
+        yValueFormatString: "$#,##0",
         dataPoints: passData
       },
       {
-        type: "stackedColumn100",
-        name: "Silver",
-        showInLegend: true,
-        color: "#C0C0C0",
+        type: "stackedBar",
+        name: "Snacks",
+        showInLegend: "true",
+        xValueFormatString: "DD, MMM",
+        yValueFormatString: "$#,##0",
         dataPoints: passData2
       },
       {
-        type: "stackedColumn100",
-        name: "Bronze",
-        showInLegend: true,
-        color: "#CD7F32",
+        type: "stackedBar",
+        name: "Drinks",
+        showInLegend: "true",
+        xValueFormatString: "DD, MMM",
+        yValueFormatString: "$#,##0",
         dataPoints: passData3
+      },
+      {
+        type: "stackedBar",
+        name: "Dessert",
+        showInLegend: "true",
+        xValueFormatString: "DD, MMM",
+        yValueFormatString: "$#,##0",
+        dataPoints: passData4
+      },
+      {
+        type: "stackedBar",
+        name: "Takeaway",
+        showInLegend: "true",
+        xValueFormatString: "DD, MMM",
+        yValueFormatString: "$#,##0",
+        dataPoints: passData5
       }
     ]
   };
@@ -239,18 +300,12 @@ export const StackedColumnFull = (state, action) => {
                 Date 1st section
               </Label>
               <Input
-                type="select"
+                type="date"
                 name="field1"
                 id="field1"
                 placeholder="Date 1st section"
                 onChange={handleChange}
-              >
-                {countries.map((item, i) => (
-                  <option key={i} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </Input>
+              />
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
@@ -271,18 +326,12 @@ export const StackedColumnFull = (state, action) => {
                 Date 2nd section
               </Label>
               <Input
-                type="select"
+                type="date"
                 name="field3"
                 id="field3"
                 placeholder="Date 2nd section"
                 onChange={handleChange}
-              >
-                {countries.map((item, i) => (
-                  <option key={i} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </Input>
+              />
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
@@ -303,18 +352,12 @@ export const StackedColumnFull = (state, action) => {
                 Date 3rd section
               </Label>
               <Input
-                type="select"
+                type="date"
                 name="field5"
                 id="field5"
                 placeholder="Date 3rd section"
                 onChange={handleChange}
-              >
-                {countries.map((item, i) => (
-                  <option key={i} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </Input>
+              />
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
@@ -325,6 +368,58 @@ export const StackedColumnFull = (state, action) => {
                 name="field6"
                 id="field6"
                 placeholder="Value 3rd section"
+                onChange={handleChange}
+                step="0.1"
+              />
+            </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Date 4th section
+              </Label>
+              <Input
+                type="date"
+                name="field7"
+                id="field7"
+                placeholder="Date 4th section"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Value 4th section
+              </Label>
+              <Input
+                type="number"
+                name="field8"
+                id="field8"
+                placeholder="Value 4th section"
+                onChange={handleChange}
+                step="0.1"
+              />
+            </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Date 5th section
+              </Label>
+              <Input
+                type="date"
+                name="field9"
+                id="field9"
+                placeholder="Date 5th section"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Value 5th section
+              </Label>
+              <Input
+                type="number"
+                name="field10"
+                id="field10"
+                placeholder="Value 5th section"
                 onChange={handleChange}
                 step="0.1"
               />

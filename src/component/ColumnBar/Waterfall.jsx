@@ -12,18 +12,24 @@ import {
 import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
 import CanvasJSReact from "../../assets/canvasjs.react";
-var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const Bar = (state, action) => {
+export const Waterfall = (state, action) => {
   const [passData, setPassData] = useState([
-    { y: 2200000000, label: "Facebook" },
-    { y: 1800000000, label: "YouTube" },
-    { y: 800000000, label: "Instagram" },
-    { y: 563000000, label: "Qzone" },
-    { y: 376000000, label: "Weibo" },
-    { y: 336000000, label: "Twitter" },
-    { y: 330000000, label: "Reddit" }
+    { label: "Initial", y: 7655 },
+    { label: "Jan", y: 5312 },
+    { label: "Feb", y: 4065 },
+    { label: "Mar", y: -2564 },
+    { label: "Apr", y: 7004 },
+    { label: "May", y: 5324 },
+    { label: "Jun", y: -11543 },
+    { label: "July", y: 4008 },
+    { label: "Aug", y: 5673 },
+    { label: "Sep", y: -6997 },
+    { label: "Oct", y: 6654 },
+    { label: "Nov", y: -10943 },
+    { label: "Dec", y: 4324 },
+    { label: "Final", isCumulativeSum: true, indexLabel: "{y}" }
   ]);
 
   // useForm declaration
@@ -34,10 +40,7 @@ export const Bar = (state, action) => {
     if (data.field1 != null && data.field2 != null) {
       setPassData(passData => [
         ...passData,
-        {
-          y: parseInt(data.field1),
-          label: data.field2
-        }
+        { label: data.field1, y: parseInt(data.field2) }
       ]);
     }
   };
@@ -55,7 +58,7 @@ export const Bar = (state, action) => {
 
   // Initialise and add pdf export to the list
   useEffect(() => {
-    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[1];
+    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[8];
     // Add export PDF
     var exportCSV = document.createElement("div");
     var text = document.createTextNode("Save as PDF");
@@ -78,7 +81,7 @@ export const Bar = (state, action) => {
       );
     });
     exportCSV.addEventListener("click", function() {
-      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[2];
+      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[16];
       var dataURL = canvas.toDataURL();
       var doc = new jsPDF("p", "mm", "a4");
       var width = doc.internal.pageSize.getWidth();
@@ -122,32 +125,20 @@ export const Bar = (state, action) => {
     }
   };
 
-  const addSymbols = e => {
-		var suffixes = ["", "K", "M", "B"];
-		var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
-		if(order > suffixes.length - 1)
-			order = suffixes.length - 1;
-		var suffix = suffixes[order];
-		return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
-	}
-
   const options = {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Most Popular Social Networking Sites"
-    },
-    axisX: {
-      title: "Social Network",
-      reversed: true
+      text: "Monthly Sales of ACME"
     },
     axisY: {
-      title: "Monthly Active Users",
-      labelFormatter: addSymbols
+      valueFormatString: "$#,##0,.K"
     },
     data: [
       {
-        type: "bar",
+        type: "waterfall",
+        yValueFormatString: "$#,##0,.00K",
+        indexLabelOrientation: "vertical",
         dataPoints: passData
       }
     ]
@@ -160,26 +151,40 @@ export const Bar = (state, action) => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
               <Label for="exampleDate" onClick={changeLabels}>
-                Bar 1
+                Date 1st section
               </Label>
               <Input
-                type="number"
+                type="select"
                 name="field1"
                 id="field1"
-                placeholder="One"
+                placeholder="Date 1st section"
                 onChange={handleChange}
-              />
+              >
+                <option value="Jan">Jan</option>
+                <option value="Feb">Feb</option>
+                <option value="Mar">Mar</option>
+                <option value="Apr">Apr</option>
+                <option value="May">May</option>
+                <option value="Jun">Jun</option>
+                <option value="Jul">Jul</option>
+                <option value="Aug">Aug</option>
+                <option value="Sept">Sept</option>
+                <option value="Oct">Oct</option>
+                <option value="Nov">Nov</option>
+                <option value="Dec">Dec</option>
+              </Input>
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
-                Bar 2
+                Value 1st section
               </Label>
               <Input
-                type="text"
+                type="number"
                 name="field2"
                 id="field2"
-                placeholder="Two"
+                placeholder="Value 1st section"
                 onChange={handleChange}
+                step="0.1"
               />
             </FormGroup>
             <Button>Submit</Button>

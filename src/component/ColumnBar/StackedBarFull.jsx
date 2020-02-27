@@ -14,44 +14,31 @@ import jsPDF from "jspdf";
 import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export const StackedColumnFull = (state, action) => {
+export const StackedBarFull = (state, action) => {
   const [passData, setPassData] = useState([
-    { label: "United States", y: 1118 },
-    { label: "Soviet Union", y: 473 },
-    { label: "Great Britain", y: 273 },
-    { label: "France", y: 243 },
-    { label: "Germany", y: 269 },
-    { label: "Italy", y: 243 },
-    { label: "Sweden", y: 195 },
-    { label: "China", y: 236 },
-    { label: "Russia", y: 194 },
-    { label: "East Germany", y: 192 }
+    { label: "Health & Clinical Science", y: 85 },
+    { label: "Education", y: 79 },
+    { label: "Psyhcology", y: 77 },
+    { label: "Language & Literature", y: 68 },
+    { label: "Communication Tech", y: 63 },
+    { label: "Art", y: 61 },
+    { label: "Biomedical Science", y: 59 },
+    { label: "Social Science & History", y: 49 },
+    { label: "Business", y: 49 },
+    { label: "Computer & Info Science", y: 18 }
   ]);
 
   const [passData2, setPassData2] = useState([
-    { label: "United States", y: 897 },
-    { label: "Soviet Union", y: 376 },
-    { label: "Great Britain", y: 299 },
-    { label: "France", y: 272 },
-    { label: "Germany", y: 272 },
-    { label: "Italy", y: 212 },
-    { label: "Sweden", y: 210 },
-    { label: "China", y: 189 },
-    { label: "Russia", y: 156 },
-    { label: "East Germany", y: 165 }
-  ]);
-
-  const [passData3, setPassData3] = useState([
-    { label: "United States", y: 789 },
-    { label: "Soviet Union", y: 355 },
-    { label: "Great Britain", y: 303 },
-    { label: "France", y: 310 },
-    { label: "Germany", y: 283 },
-    { label: "Italy", y: 236 },
-    { label: "Sweden", y: 233 },
-    { label: "China", y: 174 },
-    { label: "Russia", y: 187 },
-    { label: "East Germany", y: 162 }
+    { label: "Health & Clinical Science", y: 15 },
+    { label: "Education", y: 21 },
+    { label: "Psychology", y: 23 },
+    { label: "Language & Literature", y: 32 },
+    { label: "Communication Tech", y: 37 },
+    { label: "Art", y: 39 },
+    { label: "Biomedical Science", y: 41 },
+    { label: "Social Science & History", y: 51 },
+    { label: "Business", y: 51 },
+    { label: "Computer & Info Science", y: 82 }
   ]);
 
   // useForm declaration
@@ -72,13 +59,6 @@ export const StackedColumnFull = (state, action) => {
         { label: data.field3, y: parseInt(data.field4) }
       ]);
     }
-
-    if (data.field5 != null && data.field6 != null) {
-      setPassData3(passData3 => [
-        ...passData3,
-        { label: data.field5, y: parseInt(data.field6) }
-      ]);
-    }
   };
 
   // Handle input changes
@@ -92,13 +72,11 @@ export const StackedColumnFull = (state, action) => {
     register({ name: "field2" });
     register({ name: "field3" });
     register({ name: "field4" });
-    register({ name: "field5" });
-    register({ name: "field6" });
   }, [register]);
 
   // Initialise and add pdf export to the list
   useEffect(() => {
-    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[4];
+    var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[7];
     // Add export PDF
     var exportCSV = document.createElement("div");
     var text = document.createTextNode("Save as PDF");
@@ -121,7 +99,7 @@ export const StackedColumnFull = (state, action) => {
       );
     });
     exportCSV.addEventListener("click", function() {
-      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[8];
+      var canvas = document.getElementsByClassName("canvasjs-chart-canvas")[14];
       var dataURL = canvas.toDataURL();
       var doc = new jsPDF("p", "mm", "a4");
       var width = doc.internal.pageSize.getWidth();
@@ -154,7 +132,6 @@ export const StackedColumnFull = (state, action) => {
     resetChart.addEventListener("click", function() {
       setPassData([]);
       setPassData2([]);
-      setPassData3([]);
     });
     toolBar.lastChild.appendChild(resetChart);
   }, []);
@@ -167,64 +144,41 @@ export const StackedColumnFull = (state, action) => {
     }
   };
 
-  const toggleDataSeries = e => {
-    if (typeof e.dataSeries.visible === "undefined" || e.dataSeries.visible) {
-      e.dataSeries.visible = false;
-    } else {
-      e.dataSeries.visible = true;
-    }
-    // this.chart.render();
-  };
-
-  const [countries, setCountries] = useState([]);
-  useEffect(
-     () => {
-      const getCountries = async () => {
-        const response = await fetch('https://restcountries.eu/rest/v2/all?fields=name');
-        const jsonRespose = await response.json();
-        setCountries(jsonRespose);
-      }
-      getCountries();
-    },[]);
-
   const options = {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "All Time Summer Olympic Medals"
-    },
-    legend: {
-      verticalAlign: "center",
-      horizontalAlign: "right",
-      reversed: true,
-      cursor: "pointer",
-      fontSize: 16,
-      itemclick: toggleDataSeries
+      text: "Popular Majors Opted by Women & Men"
     },
     toolTip: {
       shared: true
     },
+    legend: {
+      verticalAlign: "top"
+    },
+    axisY: {
+      suffix: "%"
+    },
     data: [
       {
-        type: "stackedColumn100",
-        name: "Gold",
+        type: "stackedBar100",
+        color: "#9bbb59",
+        name: "Women",
         showInLegend: true,
-        color: "#D4AF37",
+        indexLabel: "{y}",
+        indexLabelFontColor: "white",
+        yValueFormatString: "#,###'%'",
         dataPoints: passData
       },
       {
-        type: "stackedColumn100",
-        name: "Silver",
+        type: "stackedBar100",
+        color: "#7f7f7f",
+        name: "Men",
         showInLegend: true,
-        color: "#C0C0C0",
+        indexLabel: "{y}%",
+        indexLabelFontColor: "white",
+        yValueFormatString: "#,###'%'",
         dataPoints: passData2
-      },
-      {
-        type: "stackedColumn100",
-        name: "Bronze",
-        showInLegend: true,
-        color: "#CD7F32",
-        dataPoints: passData3
       }
     ]
   };
@@ -236,21 +190,15 @@ export const StackedColumnFull = (state, action) => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
               <Label for="exampleDate" onClick={changeLabels}>
-                Date 1st section
+                Field 1st section
               </Label>
               <Input
-                type="select"
+                type="text"
                 name="field1"
                 id="field1"
-                placeholder="Date 1st section"
+                placeholder="Field 1st section"
                 onChange={handleChange}
-              >
-                {countries.map((item, i) => (
-                  <option key={i} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </Input>
+              />
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
@@ -268,21 +216,15 @@ export const StackedColumnFull = (state, action) => {
             <hr className="my-2" />
             <FormGroup>
               <Label for="exampleDate" onClick={changeLabels}>
-                Date 2nd section
+                Field 2nd section
               </Label>
               <Input
-                type="select"
+                type="text"
                 name="field3"
                 id="field3"
-                placeholder="Date 2nd section"
+                placeholder="Field 2nd section"
                 onChange={handleChange}
-              >
-                {countries.map((item, i) => (
-                  <option key={i} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </Input>
+              />
             </FormGroup>
             <FormGroup>
               <Label for="exampleNumber" onClick={changeLabels}>
@@ -293,38 +235,6 @@ export const StackedColumnFull = (state, action) => {
                 name="field4"
                 id="field4"
                 placeholder="Value 2nd section"
-                onChange={handleChange}
-                step="0.1"
-              />
-            </FormGroup>
-            <hr className="my-2" />
-            <FormGroup>
-              <Label for="exampleDate" onClick={changeLabels}>
-                Date 3rd section
-              </Label>
-              <Input
-                type="select"
-                name="field5"
-                id="field5"
-                placeholder="Date 3rd section"
-                onChange={handleChange}
-              >
-                {countries.map((item, i) => (
-                  <option key={i} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </Input>
-            </FormGroup>
-            <FormGroup>
-              <Label for="exampleNumber" onClick={changeLabels}>
-                Value 3rd section
-              </Label>
-              <Input
-                type="number"
-                name="field6"
-                id="field6"
-                placeholder="Value 3rd section"
                 onChange={handleChange}
                 step="0.1"
               />
