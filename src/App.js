@@ -5,6 +5,8 @@ import { Line } from "./component/Line/Line";
 import { Area } from "./component/Area/Area";
 import { Column } from "./component/ColumnBar/Column";
 import { Pie } from "./component/PieFunnel/Pie";
+import { Candlestick } from "./component/Financial/Candlestick";
+import { Scatter } from "./component/ScatterBubble/Scatter";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Route path="/Area" exact component={Area} />
         <Route path="/ColumnBar" exact component={Column} />
         <Route path="/PieFunnel" exact component={Pie} />
+        <Route path="/Financial" exact component={Candlestick} />
+        <Route path="/ScatterBubble" exact component={Scatter} />
       </Router>
     </div>
   );
