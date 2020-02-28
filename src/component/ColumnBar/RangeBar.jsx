@@ -143,6 +143,7 @@ export const RangeBar = (state, action) => {
     data: [
       {
         type: "rangeBar",
+        // eslint-disable-next-line
         indexLabel: "${y[#index]}",
         yValueFormatString: "#,##0",
         dataPoints: passData
