@@ -37,7 +37,6 @@ export const HeaderMenu = props => {
                 <DropdownItem><Link to="/ScatterBubble">Scatter & Bubble</Link></DropdownItem>
                 <DropdownItem><Link to="/BoxWhisker">Box & Whisker</Link></DropdownItem>
                 <DropdownItem><Link to="/CombinationCharts">Combination of Charts</Link></DropdownItem>
-                <DropdownItem><Link to="/Dynamic">Dynamic</Link></DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
           </Nav>
