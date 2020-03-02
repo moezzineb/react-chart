@@ -82,32 +82,12 @@ export const PieIndex = (state, action) => {
       doc.save("download.pdf");
     });
     toolBar.lastChild.appendChild(exportCSV);
-    // Add reset chart
-    var resetChart = document.createElement("div");
-    var resetChartText = document.createTextNode("Reset");
-    resetChart.setAttribute(
-      "style",
-      "padding: 12px 8px; background-color: white; color: black",
-    );
-    resetChart.appendChild(resetChartText);
-
-    resetChart.addEventListener("mouseover", function() {
-      resetChart.setAttribute(
-        "style",
-        "padding: 12px 8px; background-color: #2196F3; color: white",
-      );
-    });
-    resetChart.addEventListener("mouseout", function() {
-      resetChart.setAttribute(
-        "style",
-        "padding: 12px 8px; background-color: white; color: black",
-      );
-    });
-    resetChart.addEventListener("click", function() {
-      setPassData([]);
-    });
-    toolBar.lastChild.appendChild(resetChart);
   }, []);
+
+  // Reset event
+  const resetData = () => {
+    setPassData([]);
+  }
 
   // change Labels
   const changeLabels = e => {
@@ -167,7 +147,8 @@ export const PieIndex = (state, action) => {
                 onChange={handleChange}
               />
             </FormGroup>
-            <Button>Submit</Button>
+            <Button color="primary">Submit</Button>
+            <Button color="info" type='button' onClick={resetData}>Reset</Button>
           </Form>
         </Col>
         <Col xs="6">

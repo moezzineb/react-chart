@@ -1,4 +1,5 @@
 import React from "react";
+import './App.css';
 import { HeaderMenu } from "./component/NavBar/NavBar";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Line } from "./component/Line/Line";
