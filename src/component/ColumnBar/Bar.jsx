@@ -7,7 +7,7 @@ import {
   Container,
   Button,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
@@ -16,6 +16,9 @@ var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const Bar = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { y: 2200000000, label: "Facebook" },
     { y: 1800000000, label: "YouTube" },
@@ -23,7 +26,7 @@ export const Bar = (state, action) => {
     { y: 563000000, label: "Qzone" },
     { y: 376000000, label: "Weibo" },
     { y: 336000000, label: "Twitter" },
-    { y: 330000000, label: "Reddit" }
+    { y: 330000000, label: "Reddit" },
   ]);
 
   // useForm declaration
@@ -36,9 +39,19 @@ export const Bar = (state, action) => {
         ...passData,
         {
           y: parseInt(data.field1),
-          label: data.field2
-        }
+          label: data.field2,
+        },
       ]);
+    }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
     }
   };
 
@@ -51,6 +64,10 @@ export const Bar = (state, action) => {
   useEffect(() => {
     register({ name: "field1" });
     register({ name: "field2" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -61,20 +78,20 @@ export const Bar = (state, action) => {
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
       "style",
-      "padding: 12px 8px; background-color: white; color: black"
+      "padding: 12px 8px; background-color: white; color: black",
     );
     exportCSV.appendChild(text);
 
     exportCSV.addEventListener("mouseover", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: #2196F3; color: white"
+        "padding: 12px 8px; background-color: #2196F3; color: white",
       );
     });
     exportCSV.addEventListener("mouseout", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: white; color: black"
+        "padding: 12px 8px; background-color: white; color: black",
       );
     });
     exportCSV.addEventListener("click", function() {
@@ -88,11 +105,11 @@ export const Bar = (state, action) => {
     });
     toolBar.lastChild.appendChild(exportCSV);
   }, []);
-  
+
   // Reset event
   const resetData = () => {
     setPassData([]);
-  }
+  };
 
   // change Labels
   const changeLabels = e => {
@@ -103,34 +120,33 @@ export const Bar = (state, action) => {
   };
 
   const addSymbols = e => {
-		var suffixes = ["", "K", "M", "B"];
-		var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
-		if(order > suffixes.length - 1)
-			order = suffixes.length - 1;
-		var suffix = suffixes[order];
-		return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
-	}
+    var suffixes = ["", "K", "M", "B"];
+    var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+    if (order > suffixes.length - 1) order = suffixes.length - 1;
+    var suffix = suffixes[order];
+    return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+  };
 
   const options = {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Most Popular Social Networking Sites"
+      text: graphTitle,
     },
     axisX: {
-      title: "Social Network",
-      reversed: true
+      title: graphX,
+      reversed: true,
     },
     axisY: {
-      title: "Monthly Active Users",
-      labelFormatter: addSymbols
+      title: graphY,
+      labelFormatter: addSymbols,
     },
     data: [
       {
         type: "bar",
-        dataPoints: passData
-      }
-    ]
+        dataPoints: passData,
+      },
+    ],
   };
 
   return (
@@ -162,8 +178,47 @@ export const Bar = (state, action) => {
                 onChange={handleChange}
               />
             </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Title
+              </Label>
+              <Input
+                type="text"
+                name="graphTitle"
+                id="graphTitle"
+                placeholder="Title"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe Y
+              </Label>
+              <Input
+                type="text"
+                name="graphY"
+                id="graphY"
+                placeholder="Axe Y"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe X
+              </Label>
+              <Input
+                type="text"
+                name="graphX"
+                id="graphX"
+                placeholder="Axe X"
+                onChange={handleChange}
+              />
+            </FormGroup>
             <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
+            <Button color="info" type="button" onClick={resetData}>
+              Reset
+            </Button>
           </Form>
         </Col>
         <Col xs="6">

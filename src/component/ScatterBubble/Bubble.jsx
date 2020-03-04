@@ -15,6 +15,9 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const Bubble = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { label: "Mercury", x: 36, y: 452, z: 3031 },
     { label: "Venus", x: 67.2, y: 726, z: 7521 },
@@ -47,6 +50,16 @@ export const Bubble = (state, action) => {
         },
       ]);
     }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
+    }
   };
 
   // Handle input changes
@@ -60,6 +73,10 @@ export const Bubble = (state, action) => {
     register({ name: "field2" });
     register({ name: "field3" });
     register({ name: "field4" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -116,15 +133,15 @@ export const Bubble = (state, action) => {
     exportEnabled: true,
     theme: "dark2", // "light1", "light2", "dark1", "dark2"
     title: {
-      text: "Surface Temperature vs Size & Distance of Planets from Sun",
+      text: graphTitle,
       fontSize: 26,
     },
     axisX: {
-      title: "Distance From Sun (in Million Miles)",
+      title: graphX,
       logarithmic: true,
     },
     axisY: {
-      title: "Surface Temp (in Kelvin)",
+      title: graphY,
     },
     data: [
       {
@@ -133,7 +150,7 @@ export const Bubble = (state, action) => {
         toolTipContent:
           "<b>{label}</b><br>Distance From Sun: {x}mn miles<br>Avg. Surface Temp: {y} Kelvin<br>Diameter: {z} miles",
         dataPoints: passData,
-      }
+      },
     ],
   };
 
@@ -192,8 +209,47 @@ export const Bubble = (state, action) => {
                 step="0.1"
               />
             </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Title
+              </Label>
+              <Input
+                type="text"
+                name="graphTitle"
+                id="graphTitle"
+                placeholder="Title"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe Y
+              </Label>
+              <Input
+                type="text"
+                name="graphY"
+                id="graphY"
+                placeholder="Axe Y"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe X
+              </Label>
+              <Input
+                type="text"
+                name="graphX"
+                id="graphX"
+                placeholder="Axe X"
+                onChange={handleChange}
+              />
+            </FormGroup>
             <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
+            <Button color="info" type="button" onClick={resetData}>
+              Reset
+            </Button>
           </Form>
         </Col>
         <Col xs="6">

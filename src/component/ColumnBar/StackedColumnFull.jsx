@@ -7,7 +7,7 @@ import {
   Container,
   Button,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
@@ -15,6 +15,9 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const StackedColumnFull = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { label: "United States", y: 1118 },
     { label: "Soviet Union", y: 473 },
@@ -25,7 +28,7 @@ export const StackedColumnFull = (state, action) => {
     { label: "Sweden", y: 195 },
     { label: "China", y: 236 },
     { label: "Russia", y: 194 },
-    { label: "East Germany", y: 192 }
+    { label: "East Germany", y: 192 },
   ]);
 
   const [passData2, setPassData2] = useState([
@@ -38,7 +41,7 @@ export const StackedColumnFull = (state, action) => {
     { label: "Sweden", y: 210 },
     { label: "China", y: 189 },
     { label: "Russia", y: 156 },
-    { label: "East Germany", y: 165 }
+    { label: "East Germany", y: 165 },
   ]);
 
   const [passData3, setPassData3] = useState([
@@ -51,7 +54,7 @@ export const StackedColumnFull = (state, action) => {
     { label: "Sweden", y: 233 },
     { label: "China", y: 174 },
     { label: "Russia", y: 187 },
-    { label: "East Germany", y: 162 }
+    { label: "East Germany", y: 162 },
   ]);
 
   // useForm declaration
@@ -62,22 +65,32 @@ export const StackedColumnFull = (state, action) => {
     if (data.field1 != null && data.field2 != null) {
       setPassData(passData => [
         ...passData,
-        { label: data.field1, y: parseInt(data.field2) }
+        { label: data.field1, y: parseInt(data.field2) },
       ]);
     }
 
     if (data.field3 != null && data.field4 != null) {
       setPassData2(passData2 => [
         ...passData2,
-        { label: data.field3, y: parseInt(data.field4) }
+        { label: data.field3, y: parseInt(data.field4) },
       ]);
     }
 
     if (data.field5 != null && data.field6 != null) {
       setPassData3(passData3 => [
         ...passData3,
-        { label: data.field5, y: parseInt(data.field6) }
+        { label: data.field5, y: parseInt(data.field6) },
       ]);
+    }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
     }
   };
 
@@ -94,6 +107,10 @@ export const StackedColumnFull = (state, action) => {
     register({ name: "field4" });
     register({ name: "field5" });
     register({ name: "field6" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -104,20 +121,20 @@ export const StackedColumnFull = (state, action) => {
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
       "style",
-      "padding: 12px 8px; background-color: white; color: black"
+      "padding: 12px 8px; background-color: white; color: black",
     );
     exportCSV.appendChild(text);
 
     exportCSV.addEventListener("mouseover", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: #2196F3; color: white"
+        "padding: 12px 8px; background-color: #2196F3; color: white",
       );
     });
     exportCSV.addEventListener("mouseout", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: white; color: black"
+        "padding: 12px 8px; background-color: white; color: black",
       );
     });
     exportCSV.addEventListener("click", function() {
@@ -137,7 +154,7 @@ export const StackedColumnFull = (state, action) => {
     setPassData([]);
     setPassData2([]);
     setPassData3([]);
-  }
+  };
 
   // change Labels
   const changeLabels = e => {
@@ -157,21 +174,28 @@ export const StackedColumnFull = (state, action) => {
   };
 
   const [countries, setCountries] = useState([]);
-  useEffect(
-     () => {
-      const getCountries = async () => {
-        const response = await fetch('https://restcountries.eu/rest/v2/all?fields=name');
-        const jsonRespose = await response.json();
-        setCountries(jsonRespose);
-      }
-      getCountries();
-    },[]);
+  useEffect(() => {
+    const getCountries = async () => {
+      const response = await fetch(
+        "https://restcountries.eu/rest/v2/all?fields=name",
+      );
+      const jsonRespose = await response.json();
+      setCountries(jsonRespose);
+    };
+    getCountries();
+  }, []);
 
   const options = {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "All Time Summer Olympic Medals"
+      text: graphTitle,
+    },
+    axisY: {
+      title: graphY,
+    },
+    axisX: {
+      title: graphX,
     },
     legend: {
       verticalAlign: "center",
@@ -179,10 +203,10 @@ export const StackedColumnFull = (state, action) => {
       reversed: true,
       cursor: "pointer",
       fontSize: 16,
-      itemclick: toggleDataSeries
+      itemclick: toggleDataSeries,
     },
     toolTip: {
-      shared: true
+      shared: true,
     },
     data: [
       {
@@ -190,23 +214,23 @@ export const StackedColumnFull = (state, action) => {
         name: "Gold",
         showInLegend: true,
         color: "#D4AF37",
-        dataPoints: passData
+        dataPoints: passData,
       },
       {
         type: "stackedColumn100",
         name: "Silver",
         showInLegend: true,
         color: "#C0C0C0",
-        dataPoints: passData2
+        dataPoints: passData2,
       },
       {
         type: "stackedColumn100",
         name: "Bronze",
         showInLegend: true,
         color: "#CD7F32",
-        dataPoints: passData3
-      }
-    ]
+        dataPoints: passData3,
+      },
+    ],
   };
 
   return (
@@ -309,8 +333,47 @@ export const StackedColumnFull = (state, action) => {
                 step="0.1"
               />
             </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Title
+              </Label>
+              <Input
+                type="text"
+                name="graphTitle"
+                id="graphTitle"
+                placeholder="Title"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe Y
+              </Label>
+              <Input
+                type="text"
+                name="graphY"
+                id="graphY"
+                placeholder="Axe Y"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe X
+              </Label>
+              <Input
+                type="text"
+                name="graphX"
+                id="graphX"
+                placeholder="Axe X"
+                onChange={handleChange}
+              />
+            </FormGroup>
             <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
+            <Button color="info" type="button" onClick={resetData}>
+              Reset
+            </Button>
           </Form>
         </Col>
         <Col xs="6">

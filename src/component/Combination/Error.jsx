@@ -7,7 +7,7 @@ import {
   Container,
   Button,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 import { TabContent, TabPane, Nav, NavItem, NavLink } from "reactstrap";
 import classnames from "classnames";
@@ -22,12 +22,15 @@ import { Combination } from "./Combination";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const ErrorGraph = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { y: 94, label: "Order Accuracy" },
     { y: 74, label: "Packaging" },
     { y: 80, label: "Quantity" },
     { y: 88, label: "Quality" },
-    { y: 76, label: "Delivery" }
+    { y: 76, label: "Delivery" },
   ]);
 
   const [passData2, setPassData2] = useState([
@@ -35,7 +38,7 @@ export const ErrorGraph = (state, action) => {
     { y: [70, 78], label: "Packaging" },
     { y: [78, 85], label: "Quantity" },
     { y: [85, 92], label: "Quality" },
-    { y: [72, 78], label: "Delivery" }
+    { y: [72, 78], label: "Delivery" },
   ]);
 
   // useForm declaration
@@ -46,22 +49,28 @@ export const ErrorGraph = (state, action) => {
     if (data.field1 != null && data.field2 != null) {
       setPassData(passData => [
         ...passData,
-        { y: parseInt(data.field2), label: data.field1 }
+        { y: parseInt(data.field2), label: data.field1 },
       ]);
     }
 
-    if (
-      data.field1 != null &&
-      data.field3 != null &&
-      data.field4 != null
-    ) {
+    if (data.field1 != null && data.field3 != null && data.field4 != null) {
       let arrayData = [];
       arrayData.push(parseFloat(data.field3));
       arrayData.push(parseFloat(data.field4));
       setPassData2(passData2 => [
         ...passData2,
-        { y: arrayData, label: data.field1 }
+        { y: arrayData, label: data.field1 },
       ]);
+    }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
     }
   };
 
@@ -76,6 +85,10 @@ export const ErrorGraph = (state, action) => {
     register({ name: "field2" });
     register({ name: "field3" });
     register({ name: "field4" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -86,20 +99,20 @@ export const ErrorGraph = (state, action) => {
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
       "style",
-      "padding: 12px 8px; background-color: white; color: black"
+      "padding: 12px 8px; background-color: white; color: black",
     );
     exportCSV.appendChild(text);
 
     exportCSV.addEventListener("mouseover", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: #2196F3; color: white"
+        "padding: 12px 8px; background-color: #2196F3; color: white",
       );
     });
     exportCSV.addEventListener("mouseout", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: white; color: black"
+        "padding: 12px 8px; background-color: white; color: black",
       );
     });
     exportCSV.addEventListener("click", function() {
@@ -118,7 +131,7 @@ export const ErrorGraph = (state, action) => {
   const resetData = () => {
     setPassData([]);
     setPassData2([]);
-  }
+  };
 
   // change Labels
   const changeLabels = e => {
@@ -139,14 +152,18 @@ export const ErrorGraph = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "QOS - Survey Result"
+      text: graphTitle,
     },
     axisY: {
-      title: "Response values",
-      includeZero: false
+      title: graphY,
+      includeZero: false,
+    },
+    axisX: {
+      title: graphX,
+      includeZero: false,
     },
     toolTip: {
-      shared: true
+      shared: true,
     },
     data: [
       {
@@ -154,16 +171,16 @@ export const ErrorGraph = (state, action) => {
         name: "Avg. Score",
         toolTipContent:
           '<b>{label}</b> <br> <span style="color:#4F81BC">{name}</span>: {y}',
-        dataPoints: passData
+        dataPoints: passData,
       },
       {
         type: "error",
         name: "Variability Range",
         toolTipContent:
           '<span style="color:#C0504E">{name}</span>: {y[0]} - {y[1]}',
-        dataPoints: passData2
-      }
-    ]
+        dataPoints: passData2,
+      },
+    ],
   };
 
   return (
@@ -267,8 +284,47 @@ export const ErrorGraph = (state, action) => {
                     step="0.1"
                   />
                 </FormGroup>
+                <hr className="my-2" />
+                <FormGroup>
+                  <Label for="exampleDate" onClick={changeLabels}>
+                    Title
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphTitle"
+                    id="graphTitle"
+                    placeholder="Title"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Axe Y
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphY"
+                    id="graphY"
+                    placeholder="Axe Y"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Axe X
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphX"
+                    id="graphX"
+                    placeholder="Axe X"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
                 <Button color="primary">Submit</Button>
-                <Button color="info" type='button' onClick={resetData}>Reset</Button>
+                <Button color="info" type="button" onClick={resetData}>
+                  Reset
+                </Button>
               </Form>
             </Col>
             <Col xs="6">

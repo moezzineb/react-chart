@@ -7,7 +7,7 @@ import {
   Container,
   Button,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
@@ -15,6 +15,9 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const StackedBar = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { x: new Date(2018, 5, 25), y: 56 },
     { x: new Date(2018, 5, 26), y: 45 },
@@ -22,7 +25,7 @@ export const StackedBar = (state, action) => {
     { x: new Date(2018, 5, 28), y: 41 },
     { x: new Date(2018, 5, 29), y: 60 },
     { x: new Date(2018, 5, 30), y: 75 },
-    { x: new Date(2018, 6, 1), y: 98 }
+    { x: new Date(2018, 6, 1), y: 98 },
   ]);
 
   const [passData2, setPassData2] = useState([
@@ -32,7 +35,7 @@ export const StackedBar = (state, action) => {
     { x: new Date(2018, 5, 28), y: 58 },
     { x: new Date(2018, 5, 29), y: 60 },
     { x: new Date(2018, 5, 30), y: 65 },
-    { x: new Date(2018, 6, 1), y: 89 }
+    { x: new Date(2018, 6, 1), y: 89 },
   ]);
 
   const [passData3, setPassData3] = useState([
@@ -42,7 +45,7 @@ export const StackedBar = (state, action) => {
     { x: new Date(2018, 5, 28), y: 55 },
     { x: new Date(2018, 5, 29), y: 80 },
     { x: new Date(2018, 5, 30), y: 85 },
-    { x: new Date(2018, 6, 1), y: 83 }
+    { x: new Date(2018, 6, 1), y: 83 },
   ]);
 
   const [passData4, setPassData4] = useState([
@@ -52,7 +55,7 @@ export const StackedBar = (state, action) => {
     { x: new Date(2018, 5, 28), y: 75 },
     { x: new Date(2018, 5, 29), y: 80 },
     { x: new Date(2018, 5, 30), y: 85 },
-    { x: new Date(2018, 6, 1), y: 105 }
+    { x: new Date(2018, 6, 1), y: 105 },
   ]);
 
   const [passData5, setPassData5] = useState([
@@ -62,7 +65,7 @@ export const StackedBar = (state, action) => {
     { x: new Date(2018, 5, 28), y: 35 },
     { x: new Date(2018, 5, 29), y: 30 },
     { x: new Date(2018, 5, 30), y: 45 },
-    { x: new Date(2018, 6, 1), y: 25 }
+    { x: new Date(2018, 6, 1), y: 25 },
   ]);
 
   // useForm declaration
@@ -76,8 +79,8 @@ export const StackedBar = (state, action) => {
         ...passData,
         {
           x: new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2])),
-          y: parseFloat(data.field2)
-        }
+          y: parseFloat(data.field2),
+        },
       ]);
     }
 
@@ -87,8 +90,8 @@ export const StackedBar = (state, action) => {
         ...passData2,
         {
           x: new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2])),
-          y: parseFloat(data.field4)
-        }
+          y: parseFloat(data.field4),
+        },
       ]);
     }
 
@@ -98,8 +101,8 @@ export const StackedBar = (state, action) => {
         ...passData3,
         {
           x: new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2])),
-          y: parseFloat(data.field6)
-        }
+          y: parseFloat(data.field6),
+        },
       ]);
     }
 
@@ -109,8 +112,8 @@ export const StackedBar = (state, action) => {
         ...passData4,
         {
           x: new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2])),
-          y: parseFloat(data.field8)
-        }
+          y: parseFloat(data.field8),
+        },
       ]);
     }
 
@@ -120,9 +123,19 @@ export const StackedBar = (state, action) => {
         ...passData5,
         {
           x: new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2])),
-          y: parseFloat(data.field10)
-        }
+          y: parseFloat(data.field10),
+        },
       ]);
+    }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
     }
   };
 
@@ -143,6 +156,10 @@ export const StackedBar = (state, action) => {
     register({ name: "field8" });
     register({ name: "field9" });
     register({ name: "field10" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -153,20 +170,20 @@ export const StackedBar = (state, action) => {
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
       "style",
-      "padding: 12px 8px; background-color: white; color: black"
+      "padding: 12px 8px; background-color: white; color: black",
     );
     exportCSV.appendChild(text);
 
     exportCSV.addEventListener("mouseover", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: #2196F3; color: white"
+        "padding: 12px 8px; background-color: #2196F3; color: white",
       );
     });
     exportCSV.addEventListener("mouseout", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: white; color: black"
+        "padding: 12px 8px; background-color: white; color: black",
       );
     });
     exportCSV.addEventListener("click", function() {
@@ -188,7 +205,7 @@ export const StackedBar = (state, action) => {
     setPassData3([]);
     setPassData4([]);
     setPassData5([]);
-  }
+  };
 
   // change Labels
   const changeLabels = e => {
@@ -211,20 +228,22 @@ export const StackedBar = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Evening Sales in a Restaurant"
+      text: graphTitle,
     },
     axisX: {
-      valueFormatString: "DDD"
+      title: graphX,
+      valueFormatString: "DDD",
     },
     axisY: {
-      prefix: "$"
+      title: graphY,
+      prefix: "$",
     },
     toolTip: {
-      shared: true
+      shared: true,
     },
     legend: {
       cursor: "pointer",
-      itemclick: toggleDataSeries
+      itemclick: toggleDataSeries,
     },
     data: [
       {
@@ -233,7 +252,7 @@ export const StackedBar = (state, action) => {
         showInLegend: "true",
         xValueFormatString: "DD, MMM",
         yValueFormatString: "$#,##0",
-        dataPoints: passData
+        dataPoints: passData,
       },
       {
         type: "stackedBar",
@@ -241,7 +260,7 @@ export const StackedBar = (state, action) => {
         showInLegend: "true",
         xValueFormatString: "DD, MMM",
         yValueFormatString: "$#,##0",
-        dataPoints: passData2
+        dataPoints: passData2,
       },
       {
         type: "stackedBar",
@@ -249,7 +268,7 @@ export const StackedBar = (state, action) => {
         showInLegend: "true",
         xValueFormatString: "DD, MMM",
         yValueFormatString: "$#,##0",
-        dataPoints: passData3
+        dataPoints: passData3,
       },
       {
         type: "stackedBar",
@@ -257,7 +276,7 @@ export const StackedBar = (state, action) => {
         showInLegend: "true",
         xValueFormatString: "DD, MMM",
         yValueFormatString: "$#,##0",
-        dataPoints: passData4
+        dataPoints: passData4,
       },
       {
         type: "stackedBar",
@@ -265,9 +284,9 @@ export const StackedBar = (state, action) => {
         showInLegend: "true",
         xValueFormatString: "DD, MMM",
         yValueFormatString: "$#,##0",
-        dataPoints: passData5
-      }
-    ]
+        dataPoints: passData5,
+      },
+    ],
   };
 
   return (
@@ -404,8 +423,47 @@ export const StackedBar = (state, action) => {
                 step="0.1"
               />
             </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Title
+              </Label>
+              <Input
+                type="text"
+                name="graphTitle"
+                id="graphTitle"
+                placeholder="Title"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe Y
+              </Label>
+              <Input
+                type="text"
+                name="graphY"
+                id="graphY"
+                placeholder="Axe Y"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe X
+              </Label>
+              <Input
+                type="text"
+                name="graphX"
+                id="graphX"
+                placeholder="Axe X"
+                onChange={handleChange}
+              />
+            </FormGroup>
             <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
+            <Button color="info" type="button" onClick={resetData}>
+              Reset
+            </Button>
           </Form>
         </Col>
         <Col xs="6">

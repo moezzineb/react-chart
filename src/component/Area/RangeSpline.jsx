@@ -7,7 +7,7 @@ import {
   Container,
   Button,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
@@ -15,6 +15,9 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const RangeSpline = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { x: new Date("2017- 01"), y: [29.5, 31.84] },
     { x: new Date("2017- 02"), y: [29.26, 30.59] },
@@ -27,7 +30,7 @@ export const RangeSpline = (state, action) => {
     { x: new Date("2017- 09"), y: [23.58, 25.3] },
     { x: new Date("2017- 10"), y: [20.05, 24.89] },
     { x: new Date("2017- 11"), y: [17.46, 20.75] },
-    { x: new Date("2017- 12"), y: [17.25, 18.28] }
+    { x: new Date("2017- 12"), y: [17.25, 18.28] },
   ]);
 
   // useForm declaration
@@ -42,8 +45,18 @@ export const RangeSpline = (state, action) => {
       arrayInterval.push(parseInt(data.field3));
       setPassData(passData => [
         ...passData,
-        { x: new Date(date[0] + "-" + date[1]), y: arrayInterval }
+        { x: new Date(date[0] + "-" + date[1]), y: arrayInterval },
       ]);
+    }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
     }
   };
 
@@ -57,6 +70,10 @@ export const RangeSpline = (state, action) => {
     register({ name: "field1" });
     register({ name: "field2" });
     register({ name: "field3" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -67,20 +84,20 @@ export const RangeSpline = (state, action) => {
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
       "style",
-      "padding: 12px 8px; background-color: white; color: black"
+      "padding: 12px 8px; background-color: white; color: black",
     );
     exportCSV.appendChild(text);
 
     exportCSV.addEventListener("mouseover", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: #2196F3; color: white"
+        "padding: 12px 8px; background-color: #2196F3; color: white",
       );
     });
     exportCSV.addEventListener("mouseout", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: white; color: black"
+        "padding: 12px 8px; background-color: white; color: black",
       );
     });
     exportCSV.addEventListener("click", function() {
@@ -98,7 +115,7 @@ export const RangeSpline = (state, action) => {
   // Reset event
   const resetData = () => {
     setPassData([]);
-  }
+  };
 
   // change Labels
   const changeLabels = e => {
@@ -112,17 +129,16 @@ export const RangeSpline = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "General Electric Company Stock Price"
+      text: graphTitle,
     },
-    subtitles: [
-      {
-        text: "High and Low Prices - 2017"
-      }
-    ],
     axisY: {
-      title: "Stock Price (in USD)",
+      title: graphY,
       includeZero: false,
-      prefix: "$"
+      prefix: "$",
+    },
+    axisX: {
+      title: graphX,
+      includeZero: false,
     },
     data: [
       {
@@ -130,9 +146,9 @@ export const RangeSpline = (state, action) => {
         xValueFormatString: "MMM YYYY",
         yValueFormatString: "$#,##0.00",
         toolTipContent: "{x}<br><b>High:</b> {y[1]}<br><b>Low:</b> {y[0]}",
-        dataPoints: passData
-      }
-    ]
+        dataPoints: passData,
+      },
+    ],
   };
 
   return (
@@ -178,8 +194,47 @@ export const RangeSpline = (state, action) => {
                 step="0.1"
               />
             </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Title
+              </Label>
+              <Input
+                type="text"
+                name="graphTitle"
+                id="graphTitle"
+                placeholder="Title"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe Y
+              </Label>
+              <Input
+                type="text"
+                name="graphY"
+                id="graphY"
+                placeholder="Axe Y"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe X
+              </Label>
+              <Input
+                type="text"
+                name="graphX"
+                id="graphX"
+                placeholder="Axe X"
+                onChange={handleChange}
+              />
+            </FormGroup>
             <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
+            <Button color="info" type="button" onClick={resetData}>
+              Reset
+            </Button>
           </Form>
         </Col>
         <Col xs="6">

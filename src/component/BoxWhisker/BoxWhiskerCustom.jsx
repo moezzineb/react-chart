@@ -15,6 +15,9 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const BoxWhiskerCustom = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { label: "Germany", y: [67.5, 70.55, 76.705, 79.406, 73.15] },
     { label: "France", y: [67.41, 71.03, 78.05, 80.657, 74.36] },
@@ -49,6 +52,16 @@ export const BoxWhiskerCustom = (state, action) => {
         { label: data.field1, y: arrayData },
       ]);
     }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
+    }
   };
 
   // Handle input changes
@@ -64,6 +77,10 @@ export const BoxWhiskerCustom = (state, action) => {
     register({ name: "field4" });
     register({ name: "field5" });
     register({ name: "field6" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -105,7 +122,7 @@ export const BoxWhiskerCustom = (state, action) => {
   // Reset event
   const resetData = () => {
     setPassData([]);
-  }
+  };
 
   // change Labels
   const changeLabels = e => {
@@ -119,11 +136,14 @@ export const BoxWhiskerCustom = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Life Expectancy - Europe",
+      text: graphTitle,
     },
     axisY: {
-      title: "Age (in years)",
+      title: graphY,
       includeZero: false,
+    },
+    axisX: {
+      title: graphX,
     },
     data: [
       {
@@ -220,8 +240,47 @@ export const BoxWhiskerCustom = (state, action) => {
                 step="0.1"
               />
             </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Title
+              </Label>
+              <Input
+                type="text"
+                name="graphTitle"
+                id="graphTitle"
+                placeholder="Title"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe Y
+              </Label>
+              <Input
+                type="text"
+                name="graphY"
+                id="graphY"
+                placeholder="Axe Y"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe X
+              </Label>
+              <Input
+                type="text"
+                name="graphX"
+                id="graphX"
+                placeholder="Axe X"
+                onChange={handleChange}
+              />
+            </FormGroup>
             <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
+            <Button color="info" type="button" onClick={resetData}>
+              Reset
+            </Button>
           </Form>
         </Col>
         <Col xs="6">

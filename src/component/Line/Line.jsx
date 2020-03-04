@@ -10,6 +10,9 @@ import { StepLine } from "./StepLine";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const Line = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { x: 1, y: 10 },
     { x: 2, y: 13 },
@@ -36,6 +39,16 @@ export const Line = (state, action) => {
         { x: parseInt(data.field1), y: parseInt(data.field2) }
       ]);
     }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
+    }
   };
 
   // Handle input changes
@@ -52,6 +65,10 @@ export const Line = (state, action) => {
   useEffect(() => {
     register({ name: "field1" });
     register({ name: "field2" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -107,50 +124,56 @@ export const Line = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-        text: "Dynamic Line Chart"
+      text: graphTitle,
     },
     axisY: {
-        title: "Bounce Rate",
-        includeZero: false,
-        suffix: "%"
+      title: graphY,
+      includeZero: false,
+      suffix: "%",
     },
     axisX: {
-        title: "Week of Year",
-        prefix: "W",
-        interval: 2
+      title: graphX,
+      prefix: "W",
+      interval: 2,
     },
     data: [
-        {
-            type: 'line',
-            toolTipContent: "Week {x}: {y}%",
-            dataPoints: passData
-        }
-    ]
-};
+      {
+        type: "line",
+        toolTipContent: "Week {x}: {y}%",
+        dataPoints: passData,
+      },
+    ],
+  };
 
   return (
     <Container>
       <Nav tabs>
         <NavItem>
           <NavLink
-            className={classnames({ active: activeTab === '1' })}
-            onClick={() => { toggle('1'); }}
+            className={classnames({ active: activeTab === "1" })}
+            onClick={() => {
+              toggle("1");
+            }}
           >
             Line
           </NavLink>
         </NavItem>
         <NavItem>
           <NavLink
-            className={classnames({ active: activeTab === '2' })}
-            onClick={() => { toggle('2'); }}
+            className={classnames({ active: activeTab === "2" })}
+            onClick={() => {
+              toggle("2");
+            }}
           >
             Spline
           </NavLink>
         </NavItem>
         <NavItem>
           <NavLink
-            className={classnames({ active: activeTab === '3' })}
-            onClick={() => { toggle('3'); }}
+            className={classnames({ active: activeTab === "3" })}
+            onClick={() => {
+              toggle("3");
+            }}
           >
             Step Line
           </NavLink>
@@ -158,41 +181,80 @@ export const Line = (state, action) => {
       </Nav>
       <TabContent activeTab={activeTab}>
         <TabPane tabId="1">
-        <Row>
-        <Col xs="6">
-          <Form onSubmit={handleSubmit(onSubmit)}>
-            <FormGroup>
-              <Label for="exampleDate" onClick={changeLabels}>
-                Line 1
-              </Label>
-              <Input
-                type="number"
-                name="field1"
-                id="field1"
-                placeholder="One"
-                onChange={handleChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="exampleNumber" onClick={changeLabels}>
-                Line 2
-              </Label>
-              <Input
-                type="number"
-                name="field2"
-                id="field2"
-                placeholder="Two"
-                onChange={handleChange}
-              />
-            </FormGroup>
-            <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
-          </Form>
-        </Col>
-        <Col xs="6">
-          <CanvasJSChart options={options} />
-        </Col>
-      </Row>
+          <Row>
+            <Col xs="6">
+              <Form onSubmit={handleSubmit(onSubmit)}>
+                <FormGroup>
+                  <Label for="exampleDate" onClick={changeLabels}>
+                    Line 1
+                  </Label>
+                  <Input
+                    type="number"
+                    name="field1"
+                    id="field1"
+                    placeholder="One"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Line 2
+                  </Label>
+                  <Input
+                    type="number"
+                    name="field2"
+                    id="field2"
+                    placeholder="Two"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <hr className="my-2" />
+                <FormGroup>
+                  <Label for="exampleDate" onClick={changeLabels}>
+                    Title
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphTitle"
+                    id="graphTitle"
+                    placeholder="Title"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Axe Y
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphY"
+                    id="graphY"
+                    placeholder="Axe Y"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Axe X
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphX"
+                    id="graphX"
+                    placeholder="Axe X"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <Button color="primary">Submit</Button>
+                <Button color="info" type="button" onClick={resetData}>
+                  Reset
+                </Button>
+              </Form>
+            </Col>
+            <Col xs="6">
+              <CanvasJSChart options={options} />
+            </Col>
+          </Row>
         </TabPane>
         <TabPane tabId="2">
           <Spline />

@@ -7,7 +7,7 @@ import {
   Container,
   Button,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 import { TabContent, TabPane, Nav, NavItem, NavLink } from "reactstrap";
 import classnames from "classnames";
@@ -27,12 +27,15 @@ import { Waterfall } from "./Waterfall";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const Column = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { label: "Apple", y: 10 },
     { label: "Orange", y: 15 },
     { label: "Banana", y: 25 },
     { label: "Mango", y: 30 },
-    { label: "Grape", y: 28 }
+    { label: "Grape", y: 28 },
   ]);
 
   // useForm declaration
@@ -43,8 +46,18 @@ export const Column = (state, action) => {
     if (data.field1 != null && data.field2 != null) {
       setPassData(passData => [
         ...passData,
-        { label: data.field1, y: parseFloat(data.field2) }
+        { label: data.field1, y: parseFloat(data.field2) },
       ]);
+    }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
     }
   };
 
@@ -57,6 +70,10 @@ export const Column = (state, action) => {
   useEffect(() => {
     register({ name: "field1" });
     register({ name: "field2" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -67,20 +84,20 @@ export const Column = (state, action) => {
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
       "style",
-      "padding: 12px 8px; background-color: white; color: black"
+      "padding: 12px 8px; background-color: white; color: black",
     );
     exportCSV.appendChild(text);
 
     exportCSV.addEventListener("mouseover", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: #2196F3; color: white"
+        "padding: 12px 8px; background-color: #2196F3; color: white",
       );
     });
     exportCSV.addEventListener("mouseout", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: white; color: black"
+        "padding: 12px 8px; background-color: white; color: black",
       );
     });
     exportCSV.addEventListener("click", function() {
@@ -98,7 +115,7 @@ export const Column = (state, action) => {
   // Reset event
   const resetData = () => {
     setPassData([]);
-  }
+  };
 
   // change Labels
   const changeLabels = e => {
@@ -119,14 +136,22 @@ export const Column = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Basic Column Chart"
+      text: graphTitle,
+    },
+    axisY: {
+      title: graphY,
+      includeZero: false,
+    },
+    axisX: {
+      title: graphX,
+      includeZero: false,
     },
     data: [
       {
         type: "column",
-        dataPoints: passData
-      }
-    ]
+        dataPoints: passData,
+      },
+    ],
   };
 
   return (
@@ -253,8 +278,47 @@ export const Column = (state, action) => {
                     step="0.1"
                   />
                 </FormGroup>
+                <hr className="my-2" />
+                <FormGroup>
+                  <Label for="exampleDate" onClick={changeLabels}>
+                    Title
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphTitle"
+                    id="graphTitle"
+                    placeholder="Title"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Axe Y
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphY"
+                    id="graphY"
+                    placeholder="Axe Y"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Axe X
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphX"
+                    id="graphX"
+                    placeholder="Axe X"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
                 <Button color="primary">Submit</Button>
-                <Button color="info" type='button' onClick={resetData}>Reset</Button>
+                <Button color="info" type="button" onClick={resetData}>
+                  Reset
+                </Button>
               </Form>
             </Col>
             <Col xs="6">

@@ -15,6 +15,9 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const FunnelNeck = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { y: 265, label: "Applications" },
     { y: 134, label: "Interviewed" },
@@ -33,6 +36,16 @@ export const FunnelNeck = (state, action) => {
         { y: parseInt(data.field1), label: data.field2 },
       ]);
     }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
+    }
   };
 
   // Handle input changes
@@ -44,6 +57,10 @@ export const FunnelNeck = (state, action) => {
   useEffect(() => {
     register({ name: "field1" });
     register({ name: "field2" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -100,7 +117,13 @@ export const FunnelNeck = (state, action) => {
     exportEnabled: true,
     theme: "dark2",
     title: {
-      text: "Recruitment Analysis - July 2016",
+      text: graphTitle,
+    },
+    axisY: {
+      title: graphY
+    },
+    axisX: {
+      title: graphX
     },
     data: [
       {
@@ -158,8 +181,47 @@ export const FunnelNeck = (state, action) => {
                 onChange={handleChange}
               />
             </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Title
+              </Label>
+              <Input
+                type="text"
+                name="graphTitle"
+                id="graphTitle"
+                placeholder="Title"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe Y
+              </Label>
+              <Input
+                type="text"
+                name="graphY"
+                id="graphY"
+                placeholder="Axe Y"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe X
+              </Label>
+              <Input
+                type="text"
+                name="graphX"
+                id="graphX"
+                placeholder="Axe X"
+                onChange={handleChange}
+              />
+            </FormGroup>
             <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
+            <Button color="info" type="button" onClick={resetData}>
+              Reset
+            </Button>
           </Form>
         </Col>
         <Col xs="6">

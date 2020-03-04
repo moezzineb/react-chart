@@ -7,7 +7,7 @@ import {
   Container,
   Button,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
@@ -15,6 +15,9 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const StackedFull = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { x: new Date(2000, 0), y: 40 },
     { x: new Date(2001, 0), y: 62 },
@@ -33,7 +36,7 @@ export const StackedFull = (state, action) => {
     { x: new Date(2014, 0), y: 48 },
     { x: new Date(2015, 0), y: 39 },
     { x: new Date(2016, 0), y: 20 },
-    { x: new Date(2017, 0), y: 26 }
+    { x: new Date(2017, 0), y: 26 },
   ]);
 
   const [passData2, setPassData2] = useState([
@@ -54,7 +57,7 @@ export const StackedFull = (state, action) => {
     { x: new Date(2014, 0), y: 16 },
     { x: new Date(2015, 0), y: 13 },
     { x: new Date(2016, 0), y: 10 },
-    { x: new Date(2017, 0), y: 14 }
+    { x: new Date(2017, 0), y: 14 },
   ]);
 
   const [passData3, setPassData3] = useState([
@@ -75,7 +78,7 @@ export const StackedFull = (state, action) => {
     { x: new Date(2014, 0), y: 72 },
     { x: new Date(2015, 0), y: 63 },
     { x: new Date(2016, 0), y: 20 },
-    { x: new Date(2017, 0), y: 18 }
+    { x: new Date(2017, 0), y: 18 },
   ]);
 
   // useForm declaration
@@ -87,7 +90,7 @@ export const StackedFull = (state, action) => {
       let date = data.field1.split("-");
       setPassData(passData => [
         ...passData,
-        { x: new Date(parseInt(date[0]), 0), y: parseFloat(data.field2) }
+        { x: new Date(parseInt(date[0]), 0), y: parseFloat(data.field2) },
       ]);
     }
 
@@ -95,7 +98,7 @@ export const StackedFull = (state, action) => {
       let date = data.field3.split("-");
       setPassData2(passData2 => [
         ...passData2,
-        { x: new Date(parseInt(date[0]), 0), y: parseFloat(data.field4) }
+        { x: new Date(parseInt(date[0]), 0), y: parseFloat(data.field4) },
       ]);
     }
 
@@ -103,8 +106,18 @@ export const StackedFull = (state, action) => {
       let date = data.field5.split("-");
       setPassData3(passData3 => [
         ...passData3,
-        { x: new Date(parseInt(date[0]), 0), y: parseFloat(data.field6) }
+        { x: new Date(parseInt(date[0]), 0), y: parseFloat(data.field6) },
       ]);
+    }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
     }
   };
 
@@ -121,6 +134,10 @@ export const StackedFull = (state, action) => {
     register({ name: "field4" });
     register({ name: "field5" });
     register({ name: "field6" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -131,20 +148,20 @@ export const StackedFull = (state, action) => {
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
       "style",
-      "padding: 12px 8px; background-color: white; color: black"
+      "padding: 12px 8px; background-color: white; color: black",
     );
     exportCSV.appendChild(text);
 
     exportCSV.addEventListener("mouseover", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: #2196F3; color: white"
+        "padding: 12px 8px; background-color: #2196F3; color: white",
       );
     });
     exportCSV.addEventListener("mouseout", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: white; color: black"
+        "padding: 12px 8px; background-color: white; color: black",
       );
     });
     exportCSV.addEventListener("click", function() {
@@ -164,7 +181,7 @@ export const StackedFull = (state, action) => {
     setPassData([]);
     setPassData2([]);
     setPassData3([]);
-  }
+  };
 
   // change Labels
   const changeLabels = e => {
@@ -178,20 +195,23 @@ export const StackedFull = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Global Sales"
+      text: graphTitle,
     },
     axisY: {
-      title: "Sales",
-      suffix: "%"
+      title: graphY,
+      suffix: "%",
+    },
+    axisX: {
+      title: graphX,
     },
     toolTip: {
       shared: true,
-      reversed: true
+      reversed: true,
     },
     legend: {
       verticalAlign: "center",
       horizontalAlign: "right",
-      reversed: true
+      reversed: true,
     },
     data: [
       {
@@ -199,23 +219,23 @@ export const StackedFull = (state, action) => {
         name: "US",
         showInLegend: true,
         xValueFormatString: "YYYY",
-        dataPoints: passData
+        dataPoints: passData,
       },
       {
         type: "stackedArea100",
         name: "France",
         showInLegend: true,
         xValueFormatString: "YYYY",
-        dataPoints: passData2
+        dataPoints: passData2,
       },
       {
         type: "stackedArea100",
         name: "UK",
         showInLegend: true,
         xValueFormatString: "YYYY",
-        dataPoints: passData3
-      }
-    ]
+        dataPoints: passData3,
+      },
+    ],
   };
 
   return (
@@ -300,8 +320,47 @@ export const StackedFull = (state, action) => {
                 step="0.1"
               />
             </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Title
+              </Label>
+              <Input
+                type="text"
+                name="graphTitle"
+                id="graphTitle"
+                placeholder="Title"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe Y
+              </Label>
+              <Input
+                type="text"
+                name="graphY"
+                id="graphY"
+                placeholder="Axe Y"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe X
+              </Label>
+              <Input
+                type="text"
+                name="graphX"
+                id="graphX"
+                placeholder="Axe X"
+                onChange={handleChange}
+              />
+            </FormGroup>
             <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
+            <Button color="info" type="button" onClick={resetData}>
+              Reset
+            </Button>
           </Form>
         </Col>
         <Col xs="6">

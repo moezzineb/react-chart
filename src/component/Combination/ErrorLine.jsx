@@ -7,7 +7,7 @@ import {
   Container,
   Button,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
@@ -15,6 +15,9 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const ErrorLine = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { y: 19, label: "Jan" },
     { y: 16, label: "Feb" },
@@ -27,7 +30,7 @@ export const ErrorLine = (state, action) => {
     { y: 15, label: "Sep" },
     { y: 15, label: "Oct" },
     { y: 17, label: "Nov" },
-    { y: 17, label: "Dec" }
+    { y: 17, label: "Dec" },
   ]);
 
   const [passData2, setPassData2] = useState([
@@ -42,7 +45,7 @@ export const ErrorLine = (state, action) => {
     { y: [14, 16], label: "Sep" },
     { y: [14, 16], label: "Oct" },
     { y: [16, 18], label: "Nov" },
-    { y: [16, 19], label: "Dec" }
+    { y: [16, 19], label: "Dec" },
   ]);
 
   // useForm declaration
@@ -53,7 +56,7 @@ export const ErrorLine = (state, action) => {
     if (data.field1 != null && data.field2 != null) {
       setPassData(passData => [
         ...passData,
-        { y: parseInt(data.field2), label: data.field1 }
+        { y: parseInt(data.field2), label: data.field1 },
       ]);
     }
 
@@ -63,8 +66,18 @@ export const ErrorLine = (state, action) => {
       arrayData.push(parseFloat(data.field4));
       setPassData2(passData2 => [
         ...passData2,
-        { y: arrayData, label: data.field1 }
+        { y: arrayData, label: data.field1 },
       ]);
+    }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
     }
   };
 
@@ -79,6 +92,10 @@ export const ErrorLine = (state, action) => {
     register({ name: "field2" });
     register({ name: "field3" });
     register({ name: "field4" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -89,20 +106,20 @@ export const ErrorLine = (state, action) => {
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
       "style",
-      "padding: 12px 8px; background-color: white; color: black"
+      "padding: 12px 8px; background-color: white; color: black",
     );
     exportCSV.appendChild(text);
 
     exportCSV.addEventListener("mouseover", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: #2196F3; color: white"
+        "padding: 12px 8px; background-color: #2196F3; color: white",
       );
     });
     exportCSV.addEventListener("mouseout", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: white; color: black"
+        "padding: 12px 8px; background-color: white; color: black",
       );
     });
     exportCSV.addEventListener("click", function() {
@@ -121,7 +138,7 @@ export const ErrorLine = (state, action) => {
   const resetData = () => {
     setPassData([]);
     setPassData2([]);
-  }
+  };
 
   // change Labels
   const changeLabels = e => {
@@ -135,16 +152,17 @@ export const ErrorLine = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Average Rain Days in London - 2017"
+      text: graphTitle,
     },
     axisX: {
-      interval: 1
+      title: graphX,
+      interval: 1,
     },
     axisY: {
-      title: "Number of Days"
+      title: graphY,
     },
     toolTip: {
-      shared: true
+      shared: true,
     },
     data: [
       {
@@ -153,7 +171,7 @@ export const ErrorLine = (state, action) => {
         showInLegend: true,
         toolTipContent:
           '<b>{label}</b><br><span style="color:#4F81BC">{name}</span>: {y} days',
-        dataPoints: passData
+        dataPoints: passData,
       },
       {
         type: "error",
@@ -161,9 +179,9 @@ export const ErrorLine = (state, action) => {
         showInLegend: true,
         toolTipContent:
           '<span style="color:#C0504E">{name}</span>: {y[0]} - {y[1]} days',
-        dataPoints: passData2
-      }
-    ]
+        dataPoints: passData2,
+      },
+    ],
   };
 
   return (
@@ -235,8 +253,47 @@ export const ErrorLine = (state, action) => {
                 step="0.1"
               />
             </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Title
+              </Label>
+              <Input
+                type="text"
+                name="graphTitle"
+                id="graphTitle"
+                placeholder="Title"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe Y
+              </Label>
+              <Input
+                type="text"
+                name="graphY"
+                id="graphY"
+                placeholder="Axe Y"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe X
+              </Label>
+              <Input
+                type="text"
+                name="graphX"
+                id="graphX"
+                placeholder="Axe X"
+                onChange={handleChange}
+              />
+            </FormGroup>
             <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
+            <Button color="info" type="button" onClick={resetData}>
+              Reset
+            </Button>
           </Form>
         </Col>
         <Col xs="6">

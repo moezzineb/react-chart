@@ -7,7 +7,7 @@ import {
   Container,
   Button,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import jsPDF from "jspdf";
@@ -16,6 +16,9 @@ var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const Combination = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { x: new Date(2017, 0), y: 27500 },
     { x: new Date(2017, 1), y: 29000 },
@@ -28,7 +31,7 @@ export const Combination = (state, action) => {
     { x: new Date(2017, 8), y: 29500 },
     { x: new Date(2017, 9), y: 43000 },
     { x: new Date(2017, 10), y: 55000, indexLabel: "High Renewals" },
-    { x: new Date(2017, 11), y: 39500 }
+    { x: new Date(2017, 11), y: 39500 },
   ]);
 
   const [passData2, setPassData2] = useState([
@@ -43,7 +46,7 @@ export const Combination = (state, action) => {
     { x: new Date(2017, 8), y: 42000 },
     { x: new Date(2017, 9), y: 45000 },
     { x: new Date(2017, 10), y: 48000 },
-    { x: new Date(2017, 11), y: 47000 }
+    { x: new Date(2017, 11), y: 47000 },
   ]);
 
   const [passData3, setPassData3] = useState([
@@ -58,7 +61,7 @@ export const Combination = (state, action) => {
     { x: new Date(2017, 8), y: 15880 },
     { x: new Date(2017, 9), y: 24000 },
     { x: new Date(2017, 10), y: 31000 },
-    { x: new Date(2017, 11), y: 19000 }
+    { x: new Date(2017, 11), y: 19000 },
   ]);
 
   // useForm declaration
@@ -67,10 +70,10 @@ export const Combination = (state, action) => {
   // submit event click
   const onSubmit = data => {
     if (data.field1 != null && data.field2 != null) {
-    let date = data.field1.split("-");
+      let date = data.field1.split("-");
       setPassData(passData => [
         ...passData,
-        { x: new Date(date[0], date[1]), y: parseInt(data.field2) }
+        { x: new Date(date[0], date[1]), y: parseInt(data.field2) },
       ]);
     }
 
@@ -78,7 +81,7 @@ export const Combination = (state, action) => {
       let date = data.field1.split("-");
       setPassData2(passData2 => [
         ...passData2,
-        { x: new Date(date[0], date[1]), y: parseInt(data.field3) }
+        { x: new Date(date[0], date[1]), y: parseInt(data.field3) },
       ]);
     }
 
@@ -86,8 +89,18 @@ export const Combination = (state, action) => {
       let date = data.field1.split("-");
       setPassData3(passData3 => [
         ...passData3,
-        { x: new Date(date[0], date[1]), y: parseInt(data.field4) }
+        { x: new Date(date[0], date[1]), y: parseInt(data.field4) },
       ]);
+    }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
     }
   };
 
@@ -102,6 +115,10 @@ export const Combination = (state, action) => {
     register({ name: "field2" });
     register({ name: "field3" });
     register({ name: "field4" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -112,20 +129,20 @@ export const Combination = (state, action) => {
     var text = document.createTextNode("Save as PDF");
     exportCSV.setAttribute(
       "style",
-      "padding: 12px 8px; background-color: white; color: black"
+      "padding: 12px 8px; background-color: white; color: black",
     );
     exportCSV.appendChild(text);
 
     exportCSV.addEventListener("mouseover", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: #2196F3; color: white"
+        "padding: 12px 8px; background-color: #2196F3; color: white",
       );
     });
     exportCSV.addEventListener("mouseout", function() {
       exportCSV.setAttribute(
         "style",
-        "padding: 12px 8px; background-color: white; color: black"
+        "padding: 12px 8px; background-color: white; color: black",
       );
     });
     exportCSV.addEventListener("click", function() {
@@ -145,7 +162,7 @@ export const Combination = (state, action) => {
     setPassData([]);
     setPassData2([]);
     setPassData3([]);
-  }
+  };
 
   // change Labels
   const changeLabels = e => {
@@ -155,45 +172,44 @@ export const Combination = (state, action) => {
     }
   };
 
-    const addSymbols = e => {
-		var suffixes = ["", "K", "M", "B"];
-		var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
-		if (order > suffixes.length - 1)
-			order = suffixes.length - 1;
-		var suffix = suffixes[order];
-		return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
-	}
-	const toggleDataSeries = e => {
-		if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-			e.dataSeries.visible = false;
-		}
-		else{
-			e.dataSeries.visible = true;
-		}
-		this.chart.render();
-	}
+  const addSymbols = e => {
+    var suffixes = ["", "K", "M", "B"];
+    var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+    if (order > suffixes.length - 1) order = suffixes.length - 1;
+    var suffix = suffixes[order];
+    return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+  };
+  const toggleDataSeries = e => {
+    if (typeof e.dataSeries.visible === "undefined" || e.dataSeries.visible) {
+      e.dataSeries.visible = false;
+    } else {
+      e.dataSeries.visible = true;
+    }
+    this.chart.render();
+  };
 
   const options = {
     animationEnabled: true,
     exportEnabled: true,
     colorSet: "colorSet2",
     title: {
-      text: "Monthly Sales"
+      text: graphTitle,
     },
     axisX: {
-      valueFormatString: "MMMM"
+      title: graphX,
+      valueFormatString: "MMMM",
     },
     axisY: {
-      prefix: "$",
-      labelFormatter: addSymbols
+      prefix: graphY,
+      labelFormatter: addSymbols,
     },
     toolTip: {
-      shared: true
+      shared: true,
     },
     legend: {
       cursor: "pointer",
       itemclick: toggleDataSeries,
-      verticalAlign: "top"
+      verticalAlign: "top",
     },
     data: [
       {
@@ -202,14 +218,14 @@ export const Combination = (state, action) => {
         showInLegend: true,
         xValueFormatString: "MMMM YYYY",
         yValueFormatString: "$#,##0",
-        dataPoints: passData
+        dataPoints: passData,
       },
       {
         type: "line",
         name: "Expected Sales",
         showInLegend: true,
         yValueFormatString: "$#,##0",
-        dataPoints: passData2
+        dataPoints: passData2,
       },
       {
         type: "area",
@@ -218,9 +234,9 @@ export const Combination = (state, action) => {
         markerBorderThickness: 2,
         showInLegend: true,
         yValueFormatString: "$#,##0",
-        dataPoints: passData3
-      }
-    ]
+        dataPoints: passData3,
+      },
+    ],
   };
 
   return (
@@ -279,8 +295,47 @@ export const Combination = (state, action) => {
                 step="0.1"
               />
             </FormGroup>
+            <hr className="my-2" />
+            <FormGroup>
+              <Label for="exampleDate" onClick={changeLabels}>
+                Title
+              </Label>
+              <Input
+                type="text"
+                name="graphTitle"
+                id="graphTitle"
+                placeholder="Title"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe Y
+              </Label>
+              <Input
+                type="text"
+                name="graphY"
+                id="graphY"
+                placeholder="Axe Y"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="exampleNumber" onClick={changeLabels}>
+                Axe X
+              </Label>
+              <Input
+                type="text"
+                name="graphX"
+                id="graphX"
+                placeholder="Axe X"
+                onChange={handleChange}
+              />
+            </FormGroup>
             <Button color="primary">Submit</Button>
-            <Button color="info" type='button' onClick={resetData}>Reset</Button>
+            <Button color="info" type="button" onClick={resetData}>
+              Reset
+            </Button>
           </Form>
         </Col>
         <Col xs="6">

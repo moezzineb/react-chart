@@ -15,6 +15,9 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export const ScatterMakers = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { x: 100, y: 10 },
     { x: 150, y: 15 },
@@ -79,6 +82,16 @@ export const ScatterMakers = (state, action) => {
         { x: parseInt(data.field1), y: parseInt(data.field3) },
       ]);
     }
+
+    if (data.graphTitle) {
+      setGraphTitle(data.graphTitle);
+    }
+    if (data.graphY) {
+      setGraphY(data.graphY);
+    }
+    if (data.graphX) {
+      setGraphX(data.graphX);
+    }
   };
 
   // Handle input changes
@@ -91,6 +104,10 @@ export const ScatterMakers = (state, action) => {
     register({ name: "field1" });
     register({ name: "field2" });
     register({ name: "field3" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
@@ -156,13 +173,13 @@ export const ScatterMakers = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Active Users vs Server CPU Utilization",
+      text: graphTitle,
     },
     axisX: {
-      title: "Active Users",
+      title: graphX,
     },
     axisY: {
-      title: "CPU Utilization",
+      title: graphY,
       suffix: "%",
     },
     legend: {
