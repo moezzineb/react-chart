@@ -28,6 +28,9 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 
 export const Area = (state, action) => {
+  const [graphTitle, setGraphTitle] = useState("Graph title");
+  const [graphY, setGraphY] = useState("graph x");
+  const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
     { x: new Date(2017, 0), y: 7.6 },
     { x: new Date(2016, 0), y: 7.3 },
@@ -50,6 +53,10 @@ export const Area = (state, action) => {
         { x: new Date(parseInt(date[0]), 0), y: parseFloat(data.field2) }
       ]);
     }
+
+    if(data.graphTitle) { setGraphTitle(data.graphTitle); }
+    if(data.graphY) { setGraphY(data.graphY); }
+    if(data.graphX) { setGraphX(data.graphX); }
   };
 
   // Handle input changes
@@ -61,10 +68,15 @@ export const Area = (state, action) => {
   useEffect(() => {
     register({ name: "field1" });
     register({ name: "field2" });
+
+    register({ name: "graphTitle" });
+    register({ name: "graphY" });
+    register({ name: "graphX" });
   }, [register]);
 
   // Initialise and add pdf export to the list
   useEffect(() => {
+    document.getElementsByClassName("canvasjs-chart-credit")[0].remove();
     var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[0];
     // Add export PDF
     var exportCSV = document.createElement("div");
@@ -123,10 +135,14 @@ export const Area = (state, action) => {
     animationEnabled: true,
     exportEnabled: true,
     title: {
-      text: "Number of iPhones Sold"
+      text: graphTitle
     },
     axisY: {
-      title: "Number of iPhones ( in Million )",
+      title: graphY,
+      includeZero: false
+    },
+    axisX: {
+      title: graphX,
       includeZero: false
     },
     data: [
@@ -253,8 +269,47 @@ export const Area = (state, action) => {
                     step="0.1"
                   />
                 </FormGroup>
+                <hr className="my-2" />
+                <FormGroup>
+                  <Label for="exampleDate" onClick={changeLabels}>
+                    Title
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphTitle"
+                    id="graphTitle"
+                    placeholder="Title"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Axe Y
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphY"
+                    id="graphY"
+                    placeholder="Axe Y"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label for="exampleNumber" onClick={changeLabels}>
+                    Axe X
+                  </Label>
+                  <Input
+                    type="text"
+                    name="graphX"
+                    id="graphX"
+                    placeholder="Axe X"
+                    onChange={handleChange}
+                  />
+                </FormGroup>
                 <Button color="primary">Submit</Button>
-                <Button color="info" type='button' onClick={resetData}>Reset</Button>
+                <Button color="info" type="button" onClick={resetData}>
+                  Reset
+                </Button>
               </Form>
             </Col>
             <Col xs="6">
