@@ -32,14 +32,28 @@ export const Area = (state, action) => {
   const [graphY, setGraphY] = useState("graph x");
   const [graphX, setGraphX] = useState("graph y");
   const [passData, setPassData] = useState([
-    { x: new Date(2017, 0), y: 7.6 },
-    { x: new Date(2016, 0), y: 7.3 },
-    { x: new Date(2015, 0), y: 6.4 },
-    { x: new Date(2014, 0), y: 5.3 },
-    { x: new Date(2013, 0), y: 4.5 },
-    { x: new Date(2012, 0), y: 3.8 },
-    { x: new Date(2011, 0), y: 3.2 }
+    // { x: new Date(2017, 0), y: 7.6 },
+    // { x: new Date(2016, 0), y: 7.3 },
+    // { x: new Date(2015, 0), y: 6.4 },
+    // { x: new Date(2014, 0), y: 5.3 },
+    // { x: new Date(2013, 0), y: 4.5 },
+    // { x: new Date(2012, 0), y: 3.8 },
+    // { x: new Date(2011, 0), y: 3.2 }
   ]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await fetch(
+        "getData/Area/Area",
+      );
+      const jsonRespose = await response.json();
+      setGraphTitle(jsonRespose[0].title);
+      setGraphY(jsonRespose[0].axey);
+      setGraphX(jsonRespose[0].axex);
+      setPassData(JSON.parse(jsonRespose[0].data));
+    };
+    getData();
+  }, []);
 
   // useForm declaration
   const { register, handleSubmit, setValue } = useForm();
@@ -57,6 +71,27 @@ export const Area = (state, action) => {
     if(data.graphTitle) { setGraphTitle(data.graphTitle); }
     if(data.graphY) { setGraphY(data.graphY); }
     if(data.graphX) { setGraphX(data.graphX); }
+
+    (async () => {
+      const rawResponse = await fetch("/sendData", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          category: "Area",
+          type: "Area",
+          data: JSON.stringify(passData),
+          title: data.graphTitle,
+          axex: data.graphX,
+          axey: data.graphY,
+        }),
+      });
+      const content = await rawResponse.json();
+
+      console.log(content);
+    })();
   };
 
   // Handle input changes
