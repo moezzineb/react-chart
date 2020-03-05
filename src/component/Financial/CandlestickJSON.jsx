@@ -139,6 +139,7 @@ export const CandlestickJSON = (state, action) => {
 
   // Initialise and add pdf export to the list
   useEffect(() => {
+    document.getElementsByClassName("canvasjs-chart-credit")[1].remove();
     var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[1];
     // Add export PDF
     var exportCSV = document.createElement("div");

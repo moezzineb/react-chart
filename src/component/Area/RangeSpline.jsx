@@ -78,6 +78,7 @@ export const RangeSpline = (state, action) => {
 
   // Initialise and add pdf export to the list
   useEffect(() => {
+    document.getElementsByClassName("canvasjs-chart-credit")[5].remove();
     var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[5];
     // Add export PDF
     var exportCSV = document.createElement("div");

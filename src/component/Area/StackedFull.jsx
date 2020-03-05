@@ -142,6 +142,7 @@ export const StackedFull = (state, action) => {
 
   // Initialise and add pdf export to the list
   useEffect(() => {
+    document.getElementsByClassName("canvasjs-chart-credit")[7].remove();
     var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[7];
     // Add export PDF
     var exportCSV = document.createElement("div");

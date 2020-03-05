@@ -65,6 +65,7 @@ export const FunnelNeck = (state, action) => {
 
   // Initialise and add pdf export to the list
   useEffect(() => {
+    document.getElementsByClassName("canvasjs-chart-credit")[4].remove();
     var toolBar = document.getElementsByClassName("canvasjs-chart-toolbar")[4];
     // Add export PDF
     var exportCSV = document.createElement("div");
